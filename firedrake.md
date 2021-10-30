@@ -1,5 +1,14 @@
 # Firedrake
 
+## Installation
+
+The doc of Firedrake [Obtaining Firedrake](https://www.firedrakeproject.org/download.html) present a detail introduction on how to install it.
+
+### Based on spack
+
+If you do not have access to the system's package-manager, you can install firedrak based on [`spack`](https://spack.io/).
+Please see the istallation script [firedrake-space.sh](https://github.com/lrtfm/notes-for-firedrake/blob/main/firedrake-spack.sh).
+
 ## Parallel computing
 
 It's easy to run a simulation in parallel in firedrake:
