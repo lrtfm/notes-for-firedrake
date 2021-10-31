@@ -46,14 +46,12 @@ python3 firedrake-install --no-package-manager --complex --disable-ssh --pip-ins
 echo "Writing config into .bashrc"
 cat <<EOF >> ~/.bashrc
 function activate_firedrake() {
-        cd `pwd`
-        spack env activate .
+        spack env activate `pwd`
         unset PYTHONPATH
         source `pwd`/firedrake/bin/activate
 }
 function activate_firedrake_complex() {
-        cd `pwd`
-        spack env activate .
+        spack env activate `pwd`
         unset PYTHONPATH
         source `pwd`/firedrake/bin/activate
 }
