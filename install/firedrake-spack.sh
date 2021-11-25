@@ -1,7 +1,8 @@
 #!/bin/bash
 # A script to install firedrake and firedrake-complex on system
-# which you have not access to the package-manager.
-# We install firedrake based on spack.
+# where you have no access to the package-manager.
+#
+# We install the required packages by using spack.
 # TODO: make it a python script
 
 git clone https://github.com/spack/spack.git

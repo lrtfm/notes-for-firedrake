@@ -1,0 +1,42 @@
+# DockerFile for Firedrake in complex mode with a full set of capabilities.
+
+FROM firedrakeproject/firedrake-env:latest
+
+# This file is modified based on firedrake/docker/Dockerfile.complex in repo 
+# firedrakeproject/firedrake
+#
+# This original DockerFile is looked after by
+# MAINTAINER David Ham <david.ham@imperial.ac.uk>
+MAINTAINER Zongze Yang <yangzongze@gmail.com>
+
+USER root
+
+RUN apt-get update \
+    && apt-get -y install libgmsh4 \
+    && rm -rf /var/lib/apt/lists/*
+
+USER firedrake
+WORKDIR /home/firedrake
+
+# Now install Firedrake.
+RUN curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+RUN bash -c "python3 firedrake-install --tinyasm --slepc --no-package-manager --disable-ssh --documentation-dependencies --remove-build-files --pip-install scipy"
+
+# Install an iPython kernel for firedrake
+RUN bash -c ". /home/firedrake/firedrake/bin/activate && pip install jupyterlab mpltools pandas tqdm"
+RUN bash -c ". /home/firedrake/firedrake/bin/activate && pip install gmsh pygmsh meshio"
+
+# Remove the install log.
+RUN bash -c "rm firedrake-*"
+
+# Put the notebooks in the working directory for the notebook server.
+RUN bash -c "cp -r firedrake/src/firedrake/docs/notebooks/* ."
+# Strip the output from the notebooks.
+RUN bash -c '. /home/firedrake/firedrake/bin/activate && for file in *.ipynb; do jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace $file; done'
+
+# Environment required for Azure deployments.
+ENV OMPI_MCA_btl=tcp,self
+ENV PATH=/home/firedrake/firedrake/bin:$PATH
+ENV OMP_NUM_THREADS=1
+
+CMD /home/firedrake/firedrake/bin/jupyter-lab --ip 0.0.0.0 --no-browser --allow-root
