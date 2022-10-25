@@ -356,6 +356,12 @@ function activate_firedrake() {{
   FD_SPACK_ENV_PATH=$1
   FD_ENV_NAME=$2
   {spack} env activate $FD_SPACK_ENV_PATH -p
+
+  # spack now do not set the LD_LIBRARY_PATH, we need it here
+  # see: https://github.com/spack/spack/pull/28354
+  export FD_VIEW=$FD_SPACK_ENV_PATH/.spack-env/view
+  export LD_LIBRARY_PATH=$FD_VIEW/lib:$FD_VIEW/lib64:$LD_LIBRARY_PATH
+
   unset PYTHONPATH
   # export MPIR_CVAR_ENABLE_GPU=0
   export OMP_NUM_THREADS=1
@@ -367,6 +373,8 @@ function activate_petsc() {{
   FD_SPACK_ENV_PATH=$1
   FD_ENV_NAME=$2
   {spack} env activate $FD_SPACK_ENV_PATH -p
+  export FD_VIEW=$FD_SPACK_ENV_PATH/.spack-env/view
+  export LD_LIBRARY_PATH=$FD_VIEW/lib:$FD_VIEW/lib64:$LD_LIBRARY_PATH
   # export MPIR_CVAR_ENABLE_GPU=0
   export PETSC_DIR=$FD_SPACK_ENV_PATH/$FD_ENV_NAME/firedrake/src/petsc
   export PETSC_ARCH=default
