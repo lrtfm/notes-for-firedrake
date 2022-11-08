@@ -1,7 +1,22 @@
-all: 01_firedrake_install.pdf 02_firedrake_intro.pdf
 
-01_firedrake_install.pdf: 01_firedrake_install.ipynb
-	jupyter nbconvert --to pdf 01_firedrake_install.ipynb
+BASE_NAME=01_firedrake_install 02_firedrake_intro
 
-02_firedrake_intro.pdf: 02_firedrake_intro.ipynb
-	jupyter nbconvert --to pdf 02_firedrake_intro.ipynb
+.PHONY : all pdf tex
+all: pdf
+pdf: $(addsuffix .pdf, $(BASE_NAME))
+tex: $(addsuffix .tex, $(BASE_NAME))
+
+template_arg=--TemplateExporter.extra_template_basedirs=./templates
+%.pdf: %.ipynb
+	jupyter nbconvert $(template_arg) --to pdf $<
+
+%.tex: %.ipynb
+	jupyter nbconvert $(template_arg) --to latex $<
+
+.PHONY : test
+test:
+	echo $(addsuffix .pdf, $(BASE_NAME))
+
+.PHONY : clean
+clean:
+	$(foreach name,$(BASE_NAME),rm -rf $(name)_files $(name).tex $(name).pdf;)
