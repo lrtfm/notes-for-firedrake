@@ -6,8 +6,8 @@
 
 % Displaying simple data text
 ((* block data_text *))
-    \begin{Verbatim}[commandchars=\\\{\}]
-((( output.data['text/plain'] | escape_latex | ansi2latex )))
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single]
+((( output.data['text/plain'] | escape_latex | strip_trailing_newline | ansi2latex )))
     \end{Verbatim}
 ((* endblock data_text *))
 

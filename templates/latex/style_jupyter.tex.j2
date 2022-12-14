@@ -138,7 +138,7 @@
 ((* endblock execute_result *))
 
 ((* block stream *))
-    \begin{Verbatim}[commandchars=\\\{\}]
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, label=output]
 ((( output.text | wrap_text(charlim) | escape_latex | strip_trailing_newline | ansi2latex )))
     \end{Verbatim}
 ((* endblock stream *))
