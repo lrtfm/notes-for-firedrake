@@ -104,7 +104,7 @@ def check_create_dir(prefix):
             log.debug('Path %s is not a directory!'%prefix) 
             raise 
         log.info('Create path: %s'%prefix)
-        os.mkdir(prefix) 
+        os.makedirs(prefix) 
     else:
         log.debug('Path %s exists!'%prefix) 
 
@@ -125,6 +125,9 @@ def check_tmp_executable(spack='spack'):
         import tempfile
         import stat
 
+        if not os.path.exists(tempdir):
+            log.debug('Path %s not exists, create it!'%tempdir) 
+            os.makedirs(tempdir)
         fid, fname = tempfile.mkstemp(dir=tempdir)
         # fid = os.open(fname, os.O_RDONLY)
         mod = os.fstat(fid).st_mode
