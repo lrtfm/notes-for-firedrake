@@ -140,6 +140,18 @@ def check_tmp_executable(spack='spack'):
     ret = _check_tmp_executable()
     return ret, tempdir
 
+def get_compiler(spack='spack'):
+
+    cmd = (f'{spack} python -c '
+           '"import spack;'
+           'compilers = spack.compilers.all_compilers(scope=None, init_config=False);'
+           'cs = [c.name + \'@\' + str(c.version) for c in compilers if c.name == \'gcc\' and c.version.satisfies(spack.version.VersionRange(\'9.4.0\', \'11.9.0\'))];'
+           'cs += [\'gcc@11.3.0\'];'
+           'print(cs[0], end=\'\');"')
+
+    compiler = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, env=os.environ).decode()
+    # print(f"Will set the compiler to {compiler}")
+    return compiler
 
 
 # if __name__ == "__main__":
@@ -150,12 +162,14 @@ install_script_url = 'https://raw.githubusercontent.com/firedrakeproject/firedra
 parser = argparse.ArgumentParser(description='Install firedrake based on spack')
 parser.add_argument('--logfile', type=str, help='output log file name', default='spack-firedrake-install.log')
 parser.add_argument('--prefix', type=str, help='Where to install spack env. Default: $HOME/opt', default=None)
+parser.add_argument('--name', type=str, help='Name of spack env. Default: firedrake-env', default='firedrake-env')
 parser.add_argument('--complex', action='store_true', help='Install complex version', default=False)
 parser.add_argument('--int64', action='store_true', help='Install int64 version', default=False)
 parser.add_argument('--debug', action='store_true', help='Install PETSc with --with-debugging option', default=False)
 parser.add_argument('--firedrake-branch', type=str, help='path or url of firedrake install script!', default="master")
 parser.add_argument('--skip', action='store_true', help='Skip install spack env and firedrake! (for debug)', default=False)
-
+parser.add_argument('--verbose', action='count', help='Enable debug option for spack', default=False)
+parser.add_argument('--compiler', type=str, help='Set the compiler, for example: gcc@11.3.0', default=None)
 
 args, unknown = parser.parse_known_args()
 
@@ -195,8 +209,15 @@ if spack is None:
 
 log.info('Spack founded: ' + spack)
 
-spack_env_path = "{prefix}/firedrake-env".format(prefix=prefix)
-spack_env_config = """
+if args.compiler is not None:
+    compiler = args.compiler
+else:
+    compiler = get_compiler(spack)
+
+print(f"Will set the compiler to {compiler}")
+
+spack_env_path = "{prefix}/{name}".format(prefix=prefix, name=args.name)
+spack_env_config = f"""
 # add package specs to the `specs` list
 # This is a Spack Environment file.
 #
@@ -204,12 +225,17 @@ spack_env_config = """
 # configuration settings.
 spack:
 # add package specs to the `specs` list
-  specs: [openblas, git, autoconf, automake, libtool, cmake, zlib, bison, pkgconf,
-    py-pip, boost, py-virtualenv, python+tkinter, flex@2.6.4, gmake, tmux, mesa-glu,
-    scorep,gdb]
+  specs:
+  - matrix:
+    - [openblas, git, autoconf, automake, libtool, cmake, zlib, bison, pkgconf, py-pip,
+      boost, py-virtualenv, python+tkinter, flex@2.6.4, gmake, tmux,
+      mesa-glu, # if llvm failed, try 'mesa-glu ^llvm~omp_as_runtime',
+      # scorep, # new scorep failed
+      gdb]
+    - ['%{compiler}']
   packages:
     all:
-      compiler: [gcc@9.4.0]
+      compiler: [{compiler}]
   view: true
   concretizer:
     unify:
@@ -219,6 +245,10 @@ spack:
 ret, tempdir = check_tmp_executable(spack)
 if ret:
     log.info(f'The files in {tempdir} is executable.')
+    spack_env_config += """
+  config:
+    install_missing_compilers: true
+"""
 else:
     _msg = '''
 We will set `build_stage` to '$user_cache_path/stage' for the firedrake env.
@@ -235,6 +265,7 @@ You can edit the file `~/.spack/config.yaml` for spack globally:
 
     spack_env_config += """
   config:
+    install_missing_compilers: true
     build_stage:
       - $user_cache_path/stage
 """
@@ -254,7 +285,11 @@ log.debug(spack_env)
 with environment(**spack_env):
     if not args.skip:
         log_call([spack, "concretize", "-f"])
-        log_call([spack, "install"])
+        if args.verbose > 0:
+            extra = "-" + "d"*args.verbose
+            log_call([spack, extra, "install", "-v"])
+        else:
+            log_call([spack, "install"])
     else:
         log.debug("Skip install the env in spack")
 
@@ -263,6 +298,8 @@ spack_env = get_spack_env(spack, spack_env_path)
 install_script_url = install_script_url%args.firedrake_branch
 with workpath(spack_env_path):
     check_call(['curl', '-O', install_script_url])
+    if args.debug:
+        check_call(['sed', '-i.bak', '-e', "'s/\(--with-debugging=\)0/\11/g'", "firedrake-install"])
 
 spack_env["PETSC_CONFIGURE_OPTIONS"] = os.environ.get("PETSC_CONFIGURE_OPTIONS", '')
 install_cmd = ['python3', 'firedrake-install', '--no-package-manager', '--disable-ssh']
@@ -277,8 +314,8 @@ if args.int64:
     venv_name += "-int64"
     spack_env["PETSC_CONFIGURE_OPTIONS"] += '--download-scalapack --download-mumps'
 
-if args.debug:
-    spack_env["PETSC_CONFIGURE_OPTIONS"] += '--with-debugging'
+# if args.debug:
+#     spack_env["PETSC_CONFIGURE_OPTIONS"] += '--with-debugging'
 
 install_cmd += ["--slepc",
                 "--with-blas=download",
