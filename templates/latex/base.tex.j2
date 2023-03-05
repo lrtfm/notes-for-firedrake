@@ -60,6 +60,7 @@ override this.-=))
     \usepackage{bm}
 
     \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{fvextra}
     \usepackage{grffile} % extends the file name processing of package graphics
                          % to support a larger range
     \makeatletter % fix for old versions of grffile with XeLaTeX
@@ -129,7 +130,7 @@ override this.-=))
     \providecommand{\tightlist}{%
       \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
     \fvset{commandchars=\\\{\},fontsize=\small,baselinestretch=1}
-    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{frame=single,commandchars=\\\{\}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,frame=single,commandchars=\\\{\}}
     % Add ',fontsize=\small' for more characters per line
     \newenvironment{Shaded}{}{}
     \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
