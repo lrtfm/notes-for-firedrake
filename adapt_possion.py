@@ -45,7 +45,7 @@ def estimate(mesh, sol, u_handle, f_handle, alpha, beta):
     ksi_e = assemble(inner(g**2, avg(phi_e))*dS)
     ksi_outer = assemble(inner((sol-u_e)**2, phi_e)*ds)
 
-    h_e = assemble(phi_e*ds)
+    h_e = assemble(conj(phi_e)*ds)
     h_K = Function(V_eta_K).interpolate(CellDiameter(mesh))
     
     eta_K = assemble_eta_K_op2(ksi_K, ksi_e, ksi_outer, h_K, h_e, alpha=alpha, beta=beta)
@@ -130,13 +130,14 @@ def mark_cells(mesh, eta_K, theta):
 
     cell_node_list_K = eta_K.function_space().cell_node_list
     tol = theta*eta_max
+    eta_K_data = eta_K.dat.data_ro_with_halos
     with PETSc.Log.Event("ADD_ADAPT_LABEL"):
         plex.createLabel('adapt')
         cs, ce = plex.getHeightStratum(0)
         for i in range(cs, ce):
             c = cell_numbering.getOffset(i)
             dof  = cell_node_list_K[c][0]
-            if eta_K.dat.data_with_halos[dof] > tol:
+            if eta_K_data[dof] > tol:
                 plex.setLabelValue('adapt', i, 1)
 
     return plex
@@ -147,21 +148,35 @@ def adapt_possion():
     opts.insertString('-dm_plex_transform_type refine_sbr')
 
     def u_exact(x):
-        x1, x2 = x
-        r = sqrt(x1**2 + x2**2)
-        theta = atan_2(x2, x1)
-        u = r**(2/3)*sin(2*theta/3)
+        mesh = x.ufl_domain()
+        U = FunctionSpace(mesh, 'CG', 1)
+        u = Function(U)
+        coords = mesh.coordinates
+        x1, x2 = np.real(coords.dat.data_ro[:, 0]), np.real(coords.dat.data_ro[:, 1])
+        r = np.sqrt(x1**2 + x2**2)
+        theta = np.arctan2(x2, x1)
+        u.dat.data[:] = r**(2/3)*np.sin(2*theta/3)
         return u
     
     def f_handle(x):
         return Constant(0)
     
-    mesh = Mesh('gmsh/Lshape_0.125_uniformTrue_degree1.msh')
+    mesh = Mesh('Lshape.msh')
     ret = []
+    parameters = {}
+    parameters["partition"] = False
     for i in range(10):
+        # PETSc.Sys.Print(f'It: {i}')
         if i != 0:
             with PETSc.Log.Event("ADAPT"):
                 new_plex = plex.adaptLabel('adapt')
+                new_plex.viewFromOptions('-dm_view')
+                new_plex.removeLabel('adapt')
+                new_plex.removeLabel("pyop2_core")
+                new_plex.removeLabel("pyop2_owned")
+                new_plex.removeLabel("pyop2_ghost")
+
+            # mesh = Mesh(new_plex, distribution_parameters=parameters)
             mesh = Mesh(new_plex)
         sol, err = solve_possion(mesh, u_exact, f_handle)
         eta_K = estimate(mesh, sol, u_exact, f_handle, alpha=0.15, beta=0.15)
@@ -169,7 +184,7 @@ def adapt_possion():
         
         ndofs = sol.function_space().dim()
     
-        ret.append((ndofs, err))
+        ret.append((ndofs, np.real(err)))
         
     return ret
 
