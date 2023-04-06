@@ -1,5 +1,5 @@
 
-BASE_NAME=01_firedrake_install 02_firedrake_intro
+BASE_NAME=01_firedrake_install 02_firedrake_notes
 
 .PHONY : all pdf tex
 all: pdf

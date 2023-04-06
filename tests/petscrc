@@ -1,0 +1,4 @@
+-use_cip true
+-use_opt true
+-opt_tol 1e-3
+-opt_maxsteps 20
