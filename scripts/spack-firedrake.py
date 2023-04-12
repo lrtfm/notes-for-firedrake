@@ -11,7 +11,7 @@ import shlex
 import distutils.spawn
 
 def is_tool(name):
-  return distutils.spawn.find_executable(name) is not None
+    return distutils.spawn.find_executable(name) is not None
 
 def log_call(cmd):
     log.info("Running command '%s'", " ".join(cmd))
