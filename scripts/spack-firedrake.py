@@ -228,7 +228,7 @@ spack:
   specs:
   - matrix:
     - [openblas, git, autoconf, automake, libtool, cmake, zlib, bison, pkgconf, py-pip,
-      boost, py-virtualenv, python+tkinter, flex@2.6.4, gmake, tmux,
+      boost, py-virtualenv, py-setuptools, python+tkinter, flex@2.6.4, gmake, tmux,
       mesa-glu, # if llvm failed, try 'mesa-glu ^llvm~omp_as_runtime',
       # scorep, # new scorep failed
       gdb]
