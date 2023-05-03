@@ -84,10 +84,9 @@ def install_spack(prefix=None):
     log.info("Spack have been installed in %s!"%prefix)
 
     return os.path.join(path, 'bin/spack')
-    
-def get_spack_env(spack, env_path):
-    cmd_env_activate = [spack, "env", "activate", env_path, "--sh"]
-    output = check_output(cmd_env_activate)
+
+def get_load_env(cmd):
+    output = check_output(cmd)
     output.split('\n')
     env = {}
     for line in output.split('\n'):
@@ -96,7 +95,15 @@ def get_spack_env(spack, env_path):
             name, value = line[7:pos], line[pos+1:]
             env[name] = value[:-1] if value[-1] == ";" else value
 
-    return env # spack_env
+    return env
+
+def get_compiler_env(spack, compiler):
+    cmd_load = [spack, "load", "--sh", "--only", "package", compiler]
+    return get_load_env(cmd_load)
+
+def get_spack_env(spack, env_path):
+    cmd_env_activate = [spack, "env", "activate", "--sh", "-d", env_path]
+    return get_load_env(cmd_env_activate)
 
 def check_create_dir(prefix):
     if not os.path.isdir(prefix):
@@ -107,7 +114,6 @@ def check_create_dir(prefix):
         os.makedirs(prefix) 
     else:
         log.debug('Path %s exists!'%prefix) 
-
 
 def check_tmp_executable(spack='spack'):
 
@@ -140,14 +146,18 @@ def check_tmp_executable(spack='spack'):
     ret = _check_tmp_executable()
     return ret, tempdir
 
-def get_compiler(spack='spack'):
+def get_compiler(spack='spack', version_prefer="9.5.0", version_range="9.4.0:11.9.0"):
 
+    start, end = version_range.split(":")
     cmd = (f'{spack} python -c '
            '"import spack;'
            'compilers = spack.compilers.all_compilers(scope=None, init_config=False);'
-           'cs = [c.name + \'@\' + str(c.version) for c in compilers if c.name == \'gcc\' and c.version.satisfies(spack.version.VersionRange(\'9.4.0\', \'11.9.0\'))];'
-           'cs += [\'gcc@11.3.0\'];'
-           'print(cs[0], end=\'\');"')
+           'gcc = [c for c in compilers if c.name == \'gcc\'];'
+           f'cs1 = [\'gcc@\' + str(c.version) for c in gcc if c.version.satisfies(spack.version.Version(\'{version_prefer}\'))];'
+           f'cs2 = [\'gcc@\' + str(c.version) for c in gcc if c.version.satisfies(spack.version.VersionRange(\'{start}\', \'{end}\'))];'
+           f'candidate2 = cs2[-1] if len(cs2) > 0 else \'\';'
+           'candidate1 = cs1[-1] if len(cs1) > 0 else candidate2;'
+           'print(candidate1, end=\'\');"')
 
     compiler = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, env=os.environ).decode()
     # print(f"Will set the compiler to {compiler}")
@@ -212,9 +222,20 @@ log.info('Spack founded: ' + spack)
 if args.compiler is not None:
     compiler = args.compiler
 else:
-    compiler = get_compiler(spack)
+    compiler = get_compiler(spack, version_prefer="9.5.0", version_range="9.4.0:11.9.0")
+    if compiler == "":
+        compiler = "gcc@9.5.0"  # which version should we use?
 
 print(f"Will set the compiler to {compiler}")
+
+_version = compiler.split("@")[1]
+_compiler = get_compiler(spack, version_prefer=_version, version_range=f"{_version}:{_version}")
+if not _compiler.startswith(compiler):
+    need_load_compiler = True
+    print(f"Will load the compiler before install firedrake")
+else:
+    need_load_compiler = False
+
 
 spack_env_path = "{prefix}/{name}".format(prefix=prefix, name=args.name)
 spack_env_config = f"""
@@ -277,12 +298,26 @@ with open(spack_env_file, 'w') as f:
     f.write(spack_env_config)
 
 spack_env = get_spack_env(spack, spack_env_path)
+
 log.debug("Environment variables")
 log.debug(os.environ)
 log.debug("Environment variables of spack env before `spack install`")
 log.debug(spack_env)
 
+# Error when import firedrake on CentOS 8.5
+# # /lib64/libk5crypto.so.3: undefined symbol: EVP_KDF_ctrl, version OPENSSL_1_1_1b
+#
+# >>> import platform
+# >>> platform.linux_distribution()
+# ('CentOS Linux', '8.5.2111', '')
+import platform
+dist = platform.linux_distribution()
+need_external_openssl = dist[0].startswith("CentOS") and dist[1].startswith("8")
+
 with environment(**spack_env):
+    if need_external_openssl:
+        # for centos 8, use openssl provided by the system
+        log_call([spack, "external", "find", "--not-buildable", "openssl"])
     if not args.skip:
         log_call([spack, "concretize", "-f"])
         if args.verbose > 0:
@@ -293,7 +328,19 @@ with environment(**spack_env):
     else:
         log.debug("Skip install the env in spack")
 
-spack_env = get_spack_env(spack, spack_env_path)
+# We need load the compiler before install firedrake
+if need_load_compiler:
+    compiler_env = get_compiler_env(spack, compiler)
+    load_compiler_cmd = f"spack load --only package {compiler}"
+else:
+    compiler_env = {}
+    load_compiler_cmd = ""
+
+log.debug("Environment variables of compiler:")
+log.debug(compiler_env)
+
+with environment(**compiler_env):
+    spack_env = get_spack_env(spack, spack_env_path)
 
 install_script_url = install_script_url%args.firedrake_branch
 with workpath(spack_env_path):
@@ -349,11 +396,13 @@ if not found:
 spack_env.pop("PYTHONPATH", None)
 log.debug("Environment variables of spack env after `spack install`")
 log.debug(spack_env)
-with environment(**spack_env), workpath(spack_env_path):
-    log.debug("Environment variables in block for installing firedrake")
-    log.debug(os.environ)
-    if not args.skip:
-        log_call(install_cmd)
+with environment(**compiler_env):  # do we need this line?
+    with environment(**spack_env), workpath(spack_env_path):
+        log_call([spack, "compiler", "find"])
+        log.debug("Environment variables in block for installing firedrake")
+        log.debug(os.environ)
+        if not args.skip:
+            log_call(install_cmd)
 
 start_python_in_env = """
 #!/usr/bin/env bash
@@ -395,6 +444,7 @@ activate_fun = """
 function activate_firedrake() {{
   FD_SPACK_ENV_PATH=$1
   FD_ENV_NAME=$2
+  {load_compiler_cmd}
   spack env activate $FD_SPACK_ENV_PATH -p
 
   unset PYTHONPATH
@@ -407,6 +457,7 @@ function activate_firedrake() {{
 function activate_petsc() {{
   FD_SPACK_ENV_PATH=$1
   FD_ENV_NAME=$2
+  {load_compiler_cmd}
   spack env activate $FD_SPACK_ENV_PATH -p
   # export MPIR_CVAR_ENABLE_GPU=0
   export PETSC_DIR=$FD_SPACK_ENV_PATH/$FD_ENV_NAME/firedrake/src/petsc
@@ -423,7 +474,8 @@ alias {venv_name}-petsc="activate_petsc '{spack_env_path}' '{venv_name}'"
 # --- FIREDRAKE ALIAS END --- #
 """
 
-alias_cmd = activate_fun.format(spack=spack) + alias_template.format(spack_env_path=spack_env_path, venv_name=venv_name)
+alias_cmd = activate_fun.format(spack=spack, load_compiler_cmd=load_compiler_cmd) \
+            + alias_template.format(spack_env_path=spack_env_path, venv_name=venv_name)
 
 activate_script = os.path.join(spack_env_path, venv_name, 'bin', 'firedrake-env.sh')
 with open(activate_script, 'w') as f:
@@ -446,4 +498,13 @@ log.info("")
 log.info("Enjoy!")
 log.info("*"*80)
 log.info("")
+
+# log.info("Note:")
+# log.info("  If you found the following error when import firedrake:")
+# log.info("    ImportError: /lib64/libstdc++.so.6: version `GLIBCXX_3.4.29' not found")
+# log.info("    (required by ~/opt/firedrake-env/firedrake/lib/python3.10/site-packages/islpy/_isl.cpython-310-x86_64-linux-gnu.so)")
+# log.info("  You may need to add the lib64 path of gcc to the environment variable LD_LIBRARY_PATH.")
+# log.info(f"  This is because the compiler {compiler} used to build python is newer than the one")
+# log.info("  used to build firedrake.")
+# log.info("")
 
