@@ -2,9 +2,8 @@
 
 ## Install
 
-Several ways to install firedrake: [01_firedrake_install.ipynb](01_firedrake_install.ipynb)
+How to install firedrake: [01_firedrake_install.pdf](01_firedrake_install.pdf)
 
-## Intro
+## Notes
 
-+ jupyter notebook: [02_firedrake_intro.ipynb](02_firedrake_intro.ipynb)
-
+How to use firedrake: [02_firedrake_notes.pdf](02_firedrake_notes.pdf)
