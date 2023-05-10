@@ -161,7 +161,7 @@ def adapt_possion():
     def f_handle(x):
         return Constant(0)
     
-    mesh = Mesh('Lshape.msh')
+    mesh = Mesh('gmsh/Lshape.msh')
     ret = []
     parameters = {}
     parameters["partition"] = False
@@ -171,6 +171,7 @@ def adapt_possion():
             with PETSc.Log.Event("ADAPT"):
                 new_plex = plex.adaptLabel('adapt')
                 new_plex.viewFromOptions('-dm_view')
+                # Remove labels to avoid errors
                 new_plex.removeLabel('adapt')
                 new_plex.removeLabel("pyop2_core")
                 new_plex.removeLabel("pyop2_owned")
