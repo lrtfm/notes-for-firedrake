@@ -6,6 +6,7 @@ from pyop2.datatypes import IntType, RealType, ScalarType, \
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def solve_possion(mesh, u_handle, f_handle):
     x = SpatialCoordinate(mesh)
     u_e = u_handle(x)
@@ -143,7 +144,16 @@ def mark_cells(mesh, eta_K, theta):
     return plex
 
 
-def adapt_possion():
+def remove_pyop2_label(plex: PETSc.DMPlex):
+    # Delete lables before create mesh with the plex, 
+    # otherwise error occurs when run in parallel
+    plex.removeLabel("pyop2_core")
+    plex.removeLabel("pyop2_owned")
+    plex.removeLabel("pyop2_ghost")
+    return plex
+
+
+def adapt_possion_Lshape():
     opts = PETSc.Options()
     opts.insertString('-dm_plex_transform_type refine_sbr')
 
@@ -162,47 +172,50 @@ def adapt_possion():
         return Constant(0)
     
     mesh = Mesh('gmsh/Lshape.msh')
-    ret = []
+    result = []
     parameters = {}
     parameters["partition"] = False
+
     for i in range(10):
-        # PETSc.Sys.Print(f'It: {i}')
         if i != 0:
+            eta_K = estimate(mesh, sol, u_exact, f_handle, alpha=0.15, beta=0.15)
+            plex = mark_cells(mesh, eta_K, theta=0.2)
+
             with PETSc.Log.Event("ADAPT"):
                 new_plex = plex.adaptLabel('adapt')
-                new_plex.viewFromOptions('-dm_view')
                 # Remove labels to avoid errors
                 new_plex.removeLabel('adapt')
-                new_plex.removeLabel("pyop2_core")
-                new_plex.removeLabel("pyop2_owned")
-                new_plex.removeLabel("pyop2_ghost")
+                remove_pyop2_label(new_plex)
+
+            new_plex.viewFromOptions('-dm_view')
 
             # mesh = Mesh(new_plex, distribution_parameters=parameters)
             mesh = Mesh(new_plex)
+
         sol, err = solve_possion(mesh, u_exact, f_handle)
-        eta_K = estimate(mesh, sol, u_exact, f_handle, alpha=0.15, beta=0.15)
-        plex = mark_cells(mesh, eta_K, theta=0.2)
-        
         ndofs = sol.function_space().dim()
-    
-        ret.append((ndofs, np.real(err)))
+        result.append((ndofs, np.real(err)))
         
-    return ret
+    return result
 
-def plot_adapt_result(ret):
-    data = np.array(ret)
+def plot_adapt_result(result):
+    data = np.array(result)
     if COMM_WORLD.rank == 0:
-        plt.figure()
+        fig, ax = plt.subplots(figsize=[6, 4])
         # plt.rcParams.update({'font.size': 12})
-        plt.loglog(data[:, 0], data[:, 1], '*-', label=r'$||u_h - u||_1/||u||_1$')
+        ax.loglog(data[:, 0], data[:, 1], '*-', label=r'$||u_h - u||_1/||u||_1$')
 
-        plt.loglog(data[:, 0], data[:, 0]**(-1/2)*data[-1, 1]/data[-1, 0]**(-1/2), 'r--', label='$O(N^{-1/2})$')
-        plt.savefig('figures/adapt_solver.pdf')
-        plt.xlabel('N')
-        plt.ylabel('H1 Rel. Err.')
-        plt.legend()
+        ax.loglog(data[:, 0], data[:, 0]**(-1/2)*data[-1, 1]/data[-1, 0]**(-1/2), 'r--', label='$O(N^{-1/2})$')
+        ax.set_xlabel('N')
+        ax.set_ylabel('H1 Rel. Err.')
+        ax.legend()
+        fig.savefig('figures/adapt_solver.pdf')
+
+        return fig
+
+    return None
 
 
 if __name__ == '__main__':
-    ret = adapt_possion()
+    ret = adapt_possion_Lshape()
     plot_adapt_result(ret)

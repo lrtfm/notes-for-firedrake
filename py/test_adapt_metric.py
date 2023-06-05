@@ -77,7 +77,7 @@ def create_metric_from_indicator(indicator):
         for j in range(i):
             pair.append([i, j])
 
-    for i, nodes in enumerate(Vc.cell_node_list):
+    for k, nodes in enumerate(Vc.cell_node_list):
         vertex = coords[nodes, :]
         edge = []
         for i, j in pair:
@@ -91,7 +91,7 @@ def create_metric_from_indicator(indicator):
         b = np.ones(len(edge))
         g = np.linalg.solve(mat, b)
 
-        c = cell_volume[i] * ind[i]
+        c = cell_volume[k] * ind[k]
         for n in nodes:
             data[n, :] += c/total_volume[n]*np.array(vec2tensor(g))
 

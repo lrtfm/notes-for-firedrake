@@ -1,0 +1,10 @@
+_build/
+figures/
+gmsh/
+pvd/
+py/
+scripts/
+gmsh
+pvd
+py
+scripts
