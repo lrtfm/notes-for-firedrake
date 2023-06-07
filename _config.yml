@@ -1,7 +1,7 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: Firedrake Notes
+title: Firedrake 笔记
 author: YANG Zongze
 # logo: logo.png
 
@@ -19,6 +19,8 @@ latex:
   use_jupyterbook_latex: true
   latex_documents:
     targetname: firedrake_notes.tex
+    title: '{ \kaishu Firedrake 笔记 }'
+    author: '\hfill YANG Zongze \\ {\small yangzongze@gmail.com}'
 
 # Add a bibtex file so that we can create citations
 bibtex_bibfiles:
@@ -41,7 +43,7 @@ sphinx:
   config:
     language: zh_CN
     # https://www.sphinx-doc.org/en/master/latex.html
-    latex_show_urls: footnote  # inline
+    # latex_show_urls: footnote  # inline
     latex_elements:
       # extraclassoptions: openany
       papersize: a4paper
@@ -54,10 +56,15 @@ sphinx:
         \usepackage[perpage]{footmisc}
       # fncychap: ""
       tableofcontents: |
-        \ctexset{contentsname=目\quad 录}
+        \ctexset{
+          part/pagestyle = empty,
+          contentsname=目\quad 录
+        }
         \addtocontents{toc}{\protect{\pdfbookmark[0]{\contentsname}{toc}}}
         \sphinxtableofcontents
         % \tableofcontents
+      passoptionstopackages: |
+        \PassOptionsToPackage{AutoFakeBold}{xeCJK}
       # extrapackages: 
 
 parse:
