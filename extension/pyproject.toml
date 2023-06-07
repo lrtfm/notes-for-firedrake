@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xyzutils"
+version = "0.0.1"
+dependencies = [
+    "pygments",
+    'importlib-metadata',
+]
+
+[project.entry-points."pygments.lexers"]
+yourlexer = "xyzutils:ColabPythonLexer"

@@ -1,9 +1,15 @@
-# notes-for-firedrake
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
 
-## Install
+# Firedrake Notes
 
-How to install firedrake: [01_firedrake_install.pdf](01_firedrake_install.pdf)
-
-## Notes
-
-How to use firedrake: [02_firedrake_notes.pdf](02_firedrake_notes.pdf)
+```{tableofcontents}
+```

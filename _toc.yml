@@ -1,0 +1,31 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: README
+parts:
+- caption: Firedrake
+  numbered: true
+  chapters:
+  - file: firedrake/possion_I
+  - file: firedrake/possion_II
+  - file: firedrake/mpi
+  - file: firedrake/ns
+  - file: firedrake/cahn_hilliard
+  - file: firedrake/surface_pde
+  - file: petsc/petsc
+  - file: firedrake/debug
+  - file: firedrake/profile
+- caption: Install
+  numbered: true
+  chapters:
+  - file: installation/install
+  - file: installation/install_without_internet_access
+  - file: installation/colab
+- caption: Additional Infomation
+  numbered: true
+  chapters:
+  - file: installation/ask_for_help
+  - file: installation/other_fem_libs
+  - file: installation/jupyter_book.md
+  - file: linux/linux_proxy

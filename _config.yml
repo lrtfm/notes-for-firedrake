@@ -1,0 +1,81 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+title: Firedrake Notes
+author: YANG Zongze
+# logo: logo.png
+
+# https://jupyterbook.org/en/stable/structure/configure.html?highlight=only_build_toc_files#exclude-pages-from-your-build
+only_build_toc_files: true
+
+# Force re-execution of notebooks on each build.
+# See https://jupyterbook.org/content/execute.html
+execute:
+  execute_notebooks: 'off' # force
+
+# Define the name of the latex output file for PDF builds
+latex:
+  latex_engine: xelatex
+  use_jupyterbook_latex: true
+  latex_documents:
+    targetname: firedrake_notes.tex
+
+# Add a bibtex file so that we can create citations
+bibtex_bibfiles:
+  - reference/references.bib
+
+# Information about where the book exists on the web
+repository:
+  url: https://github.com/lrtfm/notes-for-firedrake  # Online location of your book
+  # path_to_book: notes # Optional path to your book, relative to the repository root
+  branch: notes # Which branch of the repository should be used when creating links (optional)
+
+# Add GitHub buttons to your book
+# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+html:
+  use_issues_button: true
+  use_repository_button: true
+  use_multitoc_numbering: false
+
+sphinx:
+  config:
+    language: zh_CN
+    # https://www.sphinx-doc.org/en/master/latex.html
+    latex_show_urls: footnote  # inline
+    latex_elements:
+      # extraclassoptions: openany
+      papersize: a4paper
+      cmappkg: ""
+      fontenc: ""
+      fontpkg: |
+        % \setmonofont{DejaVu Sans Mono}
+      preamble: |
+        \usepackage[linespread=1.2,punct=plain,heading=true,fontset=windows]{ctex}
+        \usepackage[perpage]{footmisc}
+      # fncychap: ""
+      tableofcontents: |
+        \ctexset{contentsname=目\quad 录}
+        \addtocontents{toc}{\protect{\pdfbookmark[0]{\contentsname}{toc}}}
+        \sphinxtableofcontents
+        % \tableofcontents
+      # extrapackages: 
+
+parse:
+  myst_enable_extensions:
+    # don't forget to list any other extensions you want enabled,
+    # including those that are enabled by default!
+    - amsmath
+    # - attrs_inline
+    # - attrs_block
+    - colon_fence
+    - deflist
+    - dollarmath
+    - fieldlist
+    - html_admonition
+    - html_image
+    - linkify
+    - replacements
+    - smartquotes
+    - strikethrough
+    - substitution
+    - tasklist

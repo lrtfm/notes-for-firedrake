@@ -137,3 +137,4 @@ dmypy.json
 02_firedrake_intro.pdf
 02_firedrake_notes.pdf
 .aux/
+_build/
