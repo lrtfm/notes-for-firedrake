@@ -138,3 +138,4 @@ dmypy.json
 02_firedrake_notes.pdf
 .aux/
 _build/
+*.logs

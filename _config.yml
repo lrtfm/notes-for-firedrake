@@ -1,7 +1,7 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: Firedrake 笔记
+title: Firedrake Notes
 author: YANG Zongze
 # logo: logo.png
 
@@ -19,7 +19,7 @@ latex:
   use_jupyterbook_latex: true
   latex_documents:
     targetname: firedrake_notes.tex
-    title: '{ \kaishu Firedrake 笔记 }'
+    title: '{\kaishu Firedrake Notes}'
     author: '\hfill YANG Zongze \\ {\small yangzongze@gmail.com}'
 
 # Add a bibtex file so that we can create citations
@@ -35,13 +35,30 @@ repository:
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
-  use_issues_button: true
-  use_repository_button: true
-  use_multitoc_numbering: false
+  favicon                   : ""    # A path to a favicon image
+  use_edit_page_button      : false # Whether to add an "edit this page" button to pages. If `true`, repository information in repository: must be filled in
+  use_repository_button     : true  # Whether to add a link to your repository button
+  use_issues_button         : true  # Whether to add an "open an issue" button
+  use_multitoc_numbering    : false # Continuous numbering across parts/chapters
+  extra_footer              : ""    # Will be displayed underneath the footer.
+  google_analytics_id       : ""    # A GA id that can be used to track book views.
+  home_page_in_navbar       : true  # Whether to include your home page in the left Navigation Ba
+  baseurl                   : https://zzyang.net/firedrake-notes
+  analytics:
+  extra_footer: |
+    <div>
+      &copy; Copyright 2023.
+    </div>
+
+  comments:
+    hypothesis              : false
+    utterances              : false
+  announcement              : "" # A banner announcement at the top of the site.
 
 sphinx:
   config:
-    language: zh_CN
+    html_show_copyright: false
+    language: en
     # https://www.sphinx-doc.org/en/master/latex.html
     # latex_show_urls: footnote  # inline
     latex_elements:
@@ -52,13 +69,14 @@ sphinx:
       fontpkg: |
         % \setmonofont{DejaVu Sans Mono}
       preamble: |
-        \usepackage[linespread=1.2,punct=plain,heading=true,fontset=windows]{ctex}
+        % \usepackage[linespread=1.2,punct=plain,heading=true,fontset=windows]{ctex}
+        \usepackage[linespread=1.2,punct=plain,fontset=windows]{ctex}
         \usepackage[perpage]{footmisc}
       # fncychap: ""
       tableofcontents: |
         \ctexset{
           part/pagestyle = empty,
-          contentsname=目\quad 录
+          % contentsname=目\quad 录
         }
         \addtocontents{toc}{\protect{\pdfbookmark[0]{\contentsname}{toc}}}
         \sphinxtableofcontents
