@@ -5,6 +5,7 @@ title: Firedrake Notes
 author: YANG Zongze
 # logo: logo.png
 
+
 # https://jupyterbook.org/en/stable/structure/configure.html?highlight=only_build_toc_files#exclude-pages-from-your-build
 only_build_toc_files: true
 
@@ -40,14 +41,14 @@ html:
   use_repository_button     : true  # Whether to add a link to your repository button
   use_issues_button         : true  # Whether to add an "open an issue" button
   use_multitoc_numbering    : false # Continuous numbering across parts/chapters
-  extra_footer              : ""    # Will be displayed underneath the footer.
   google_analytics_id       : ""    # A GA id that can be used to track book views.
   home_page_in_navbar       : true  # Whether to include your home page in the left Navigation Ba
   baseurl                   : https://zzyang.net/firedrake-notes
   analytics:
   extra_footer: |
     <div>
-      &copy; Copyright 2023.
+    <!-- By <a href="https://zzyang.net/">YANG Zongze</a>  -->
+    &copy; Copyright 2023.
     </div>
 
   comments:
