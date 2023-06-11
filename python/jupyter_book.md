@@ -1,5 +1,10 @@
 # Jupyter-book
 
+## MyST
+
+Directives - a block-level extension point
+
+https://myst-parser.readthedocs.io/en/latest/syntax/roles-and-directives.html#syntax-directives
 
 ## Pygments
 

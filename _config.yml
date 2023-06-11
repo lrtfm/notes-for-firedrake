@@ -57,22 +57,30 @@ html:
   announcement              : "" # A banner announcement at the top of the site.
 
 sphinx:
+  extra_extensions:
+    # - sphinxcontrib.mermaid
+    # - sphinxcontrib.wavedrom
+    - sphinxcontrib.plantuml
+    - sphinxcontrib.tikz
+    # - sphinxcontrib.blockdiag
   config:
     html_show_copyright: false
     language: en
     # https://www.sphinx-doc.org/en/master/latex.html
     # latex_show_urls: footnote  # inline
     latex_elements:
-      # extraclassoptions: openany
-      # papersize: a4paper
+      extraclassoptions: oneside
+      papersize: a4paper
       cmappkg: ""
-      fontenc: ""
+      # fontenc: ""
       fontpkg: |
+        \setmainfont{DejaVu Serif}
+        % \setsansfont{DejaVu Sans}
         % \setmonofont{DejaVu Sans Mono}
       utf8extra: ""
       preamble: |
-        % \usepackage[linespread=1.2,punct=plain,heading=true,fontset=windows]{ctex}
-        \usepackage[linespread=1.2,punct=plain,fontset=windows]{ctex}
+        \usepackage[linespread=1.2,punct=plain,heading=true,fontset=windows]{ctex}
+        % \usepackage[linespread=1.2,punct=plain,fontset=windows]{ctex}
         \usepackage[perpage]{footmisc}
         \makeatletter
         \fancypagestyle{normal}{
@@ -96,26 +104,38 @@ sphinx:
           \renewcommand{\footrulewidth}{0pt}
         }
         \makeatother
-        \titleformat{\part}%
-        [display]%  shape
-        {\large\bfseries\filcenter}%  format
-        {\huge\partname{} \thepart}%  label
-        {0pt}%  sep
-        {\thispagestyle{empty}\vspace{1.5pc}\huge}%  before-code
-        []%  after-code
-        % end \titleformat{\part}
+        % \titleformat{\part}%
+        % [display]%  shape
+        % {\large\bfseries\filcenter}%  format
+        % {\huge\partname{} \thepart}%  label
+        % {0pt}%  sep
+        % {\thispagestyle{empty}\vspace{1.5pc}\huge}%  before-code
+        % []%  after-code
+        % % end \titleformat{\part}
         \ctexset{
-          % part/pagestyle = empty,
-          % contentsname=目\quad 录
+          part/pagestyle = empty,
+          contentsname=目\quad 录
+        }
+        \usepackage{bookmark}
+        \renewenvironment{sphinxthebibliography}[1]{%
+          \cleardoublepage%
+          \part*{}\bookmarksetup{startatroot}%
+          \phantomsection%
+          \begin{thebibliography}{#1}%
+          \addcontentsline{toc}{chapter}{\bibname}%
+        }{%
+          \end{thebibliography}%
         }
       # fncychap: ""
       tableofcontents: |
-        \addtocontents{toc}{\protect{\pdfbookmark[0]{\contentsname}{toc}}}
+        \phantomsection
+        \addcontentsline{toc}{chapter}{\contentsname}
         \sphinxtableofcontents
-        % \tableofcontents
       passoptionstopackages: |
         \PassOptionsToPackage{AutoFakeBold}{xeCJK}
       # extrapackages: 
+      fvset: |
+        \fvset{fontsize=\small,baselinestretch=1} % showspaces=true do not work
 
 parse:
   myst_enable_extensions:
