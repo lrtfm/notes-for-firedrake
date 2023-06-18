@@ -17,6 +17,9 @@ to use Firedrake, I took some notes on it, including installation, mesh
 generation, defining variational forms, solving PDEs, and some tricks on using
 Firedrake. 
 
+The notes are currently being consistently updated and are far from being a comprehensive document.
+ Please feel free to ask questions and post issues.
+
 ## Table of Contents
 ```{tableofcontents}
 ```

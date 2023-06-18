@@ -209,7 +209,7 @@ EOF
    If you run the following test, there will be an error:
 
    ```console
-   $ cd petsc/src/binding/petsc4py/demo/kspsolve
+   $ cd $(dirname `which python`)/../src/petsc/src/binding/petsc4py/demo/kspsolve
    $ python test_mat_ksp.py -pc_type lu -pc_factor_mat_solver_type mkl_cpardiso -ksp_view
    Intel MKL FATAL ERROR: Cannot load symbol MKLMPI_Get_wrappers.
    ```

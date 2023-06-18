@@ -129,13 +129,9 @@ dmypy.json
 .pyre/
 .ipynb_checkpoints
 
-/data
-/figures
-/org
-/pvd
-01_firedrake_install.pdf
-02_firedrake_intro.pdf
-02_firedrake_notes.pdf
+firedrake/data
+firedrake/figures
+firedrake/pvd
 .aux/
 _build/
 *.logs
