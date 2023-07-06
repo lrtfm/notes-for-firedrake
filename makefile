@@ -2,13 +2,20 @@
 
 all: html
 
+OUTPUT=/mnt/c/aux/firedrake
+
 pdf:
-	jupyter-book build --builder pdflatex ./
-	cp _build/latex/firedrake-notes.pdf ./
+	jupyter-book build --path-output ${OUTPUT}  --builder pdflatex ./
+	cp ${OUTPUT}/_build/latex/firedrake-notes.pdf ./
 
 html:
-	jupyter-book build ./
+	jupyter-book build --path-output ${OUTPUT} ./
+
+push: html
+	rsync -rP  ${OUTPUT}/_build/html/ zzyang.net:/var/www/html/firedrake-notes/ > rsync.logs
 
 clean:
 	jupyter-book clean ./
+	rm -rf ${OUTPUT}/_build/html/
+	rm -rf ${OUTPUT}/_build/latex/
 

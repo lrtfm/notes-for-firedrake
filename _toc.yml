@@ -7,8 +7,8 @@ parts:
 - caption: Firedrake
   numbered: true
   chapters:
-  - file: firedrake/possion_I
-  - file: firedrake/possion_II
+  - file: firedrake/poisson_I
+  - file: firedrake/poisson_II
   - file: firedrake/mpi
   - file: firedrake/ns
   - file: firedrake/cahn_hilliard
@@ -16,7 +16,7 @@ parts:
   - file: petsc/petsc
   - file: firedrake/debug
   - file: firedrake/profile
-- caption: Install
+- caption: Installation
   numbered: true
   chapters:
   - file: installation/install
