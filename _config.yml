@@ -69,7 +69,7 @@ sphinx:
     # https://www.sphinx-doc.org/en/master/latex.html
     # latex_show_urls: footnote  # inline
     latex_elements:
-      extraclassoptions: oneside
+      extraclassoptions: twoside,openany
       papersize: a4paper
       cmappkg: ""
       # fontenc: ""
@@ -79,8 +79,13 @@ sphinx:
         % \setmonofont{DejaVu Sans Mono}
       utf8extra: ""
       preamble: |
-        \usepackage[linespread=1.2,punct=plain,heading=true,fontset=windows]{ctex}
-        % \usepackage[linespread=1.2,punct=plain,fontset=windows]{ctex}
+        \usepackage[
+          linespread=1.2,
+          punct=plain,
+          heading=false,
+          fontset=windows,
+          % scheme=chinese,
+        ]{ctex}
         \usepackage[perpage]{footmisc}
         \makeatletter
         \fancypagestyle{normal}{
@@ -113,7 +118,7 @@ sphinx:
         % []%  after-code
         % % end \titleformat{\part}
         \ctexset{
-          part/pagestyle = empty,
+          % part/pagestyle = empty,
           contentsname=目\quad 录
         }
         \usepackage{bookmark}
@@ -135,14 +140,17 @@ sphinx:
         \PassOptionsToPackage{AutoFakeBold}{xeCJK}
       # extrapackages: 
       fvset: |
-        \fvset{fontsize=\small,baselinestretch=1} % showspaces=true do not work
+        \fvset{
+          % fontsize=\small,
+          baselinestretch=1,
+        } % showspaces=true do not work
 
 parse:
   myst_enable_extensions:
     # don't forget to list any other extensions you want enabled,
     # including those that are enabled by default!
     - amsmath
-    # - attrs_inline
+    # - attrs_inline  # this is not supported by myst-parser 0.18.1
     # - attrs_block
     - colon_fence
     - deflist

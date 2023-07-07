@@ -1,5 +1,14 @@
 # Jupyter-book
 
+## Install
+
+```console
+pip install -U jupyter-book
+sudo apt install plantuml                 # for sphinxcontrib-plantuml
+pip install -U sphinxcontrib-plantuml
+pip install -U sphinxcontrib-tikz
+```
+
 ## MyST
 
 Directives - a block-level extension point
