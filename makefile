@@ -12,7 +12,7 @@ html:
 	jupyter-book build --path-output ${OUTPUT} ./
 
 push: html
-	rsync -rP  ${OUTPUT}/_build/html/ zzyang.net:/var/www/html/firedrake-notes/ > rsync.logs
+	rsync -rP --delete ${OUTPUT}/_build/html/ zzyang.net:/var/www/html/firedrake-notes/ > rsync.logs
 
 clean:
 	jupyter-book clean ./
