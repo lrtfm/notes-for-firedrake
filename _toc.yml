@@ -14,6 +14,7 @@ parts:
   - file: firedrake/cahn_hilliard
   - file: firedrake/surface_pde
   - file: petsc/petsc
+  - file: firedrake/kernels
   - file: firedrake/debug
   - file: firedrake/profile
 - caption: Installation
