@@ -2,7 +2,7 @@
 
 all: html
 
-OUTPUT=/mnt/c/aux/firedrake
+OUTPUT=${HOME}/aux/firedrake
 
 pdf:
 	jupyter-book build --path-output ${OUTPUT}  --builder pdflatex ./

@@ -74,7 +74,7 @@ sphinx:
       cmappkg: ""
       # fontenc: ""
       fontpkg: |
-        \setmainfont{DejaVu Serif}
+        % \setmainfont{DejaVu Serif}
         % \setsansfont{DejaVu Sans}
         % \setmonofont{DejaVu Sans Mono}
       utf8extra: ""
@@ -83,7 +83,7 @@ sphinx:
           linespread=1.2,
           punct=plain,
           heading=false,
-          fontset=windows,
+          % fontset=windows,
           % scheme=chinese,
         ]{ctex}
         \usepackage[perpage]{footmisc}
