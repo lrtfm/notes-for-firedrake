@@ -90,11 +90,49 @@ EOF
        --download-fftw --download-mmg \
        --download-p4est --download-parmmg --download-triangle \
        --download-tetgen --download-ctetgen --download-hpddm --download-libpng \
-       --download-slepc  --download-pragmatic --download-eigen" \
+       --download-slepc --download-pragmatic --download-eigen" \
    python3 firedrake-install --disable-ssh \
        --documentation-dependencies \
        --venv-name $HOME/firedrake/real-int32$DEBUG
    ```
+
+### Installation `complex-int32` and/or `complex-int32-debug`
+
+1. Download the installation script
+
+   ```bash
+   curl -O \
+   https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+   ```
+
+2. Enable PETSc's debug option (optional)
+
+   ```bash
+   DEBUG='-debug'
+   sed -i.bak -e 's/\(--with-debugging=\)0/\11/g' firedrake-install
+   ```
+
+3. Update the package of the system
+
+   ```bash
+   sudo apt-get update
+   sudo apt-get install pkg-config # for p4est
+   ```
+
+4. Install
+
+   ```bash
+   PETSC_CONFIGURE_OPTIONS=" \
+       --download-fftw --download-mmg \
+       --download-p4est --download-parmmg --download-triangle \
+       --download-tetgen --download-ctetgen --download-hpddm --download-libpng \
+       --download-slepc --download-pragmatic --download-eigen \
+       --download-scalapack --download-mumps" \
+   python3 firedrake-install --disable-ssh \
+       --documentation-dependencies  \
+       --petsc-int-type int32 --complex \
+       --venv-name $HOME/opt/firedrake/complex-int32$DEBUG
+    ```
 
 ###  Install `complex-int64` and/or `complex-int64-debug`
 
@@ -522,6 +560,8 @@ Follow the installation method for Ubuntu.
 -->
 ## MacOS
 First, install Homebrew[^brew], and then use Homebrew to install python3. After that, install Firedrake directly, similar to Ubuntu.
+
+Please install `pkgconf` before start the installation if you add package `p4est` for PETSc.
 
 [^brew]: Homebrew https://brew.sh/
 
