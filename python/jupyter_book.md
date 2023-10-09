@@ -4,6 +4,7 @@
 
 ```console
 pip install -U jupyter-book
+pip install Pillow
 sudo apt install plantuml                 # for sphinxcontrib-plantuml
 pip install -U sphinxcontrib-plantuml
 pip install -U sphinxcontrib-tikz

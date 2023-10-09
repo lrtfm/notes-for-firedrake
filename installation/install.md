@@ -9,7 +9,7 @@
 -->
 
 To install firedrake, the computer should have access to the Internet.
-Otherwise, please refer to {doc}`install_without_internet_access`. 
+Otherwise, please refer to {doc}`install_without_internet_access`.
 
 ## Ubuntu
 
@@ -57,6 +57,13 @@ index-url = https://pypi.mirrors.ustc.edu.cn/simple
 [install]
 trusted-host=pypi.mirrors.ustc.edu.cn
 EOF
+```
+````
+
+````{note}
+After the installation, we can install some useful python packages:
+```bash
+pip install gmsh, meshio
 ```
 ````
 
@@ -360,7 +367,7 @@ alias firedrake-mkl="export OMP_NUM_THREADS=1 && \
 #### Download package for petsc
 
 Sometimes, some of the packages that petsc depends on cannot be downloaded automatically.
-We can add the option 
+We can add the option
 
 ```bash
 --with-packages-download-dir=<path/to/petsc/packages>
@@ -374,7 +381,7 @@ Please modify the corresponding commands according to your needs.
 
 ```python
 packages = {
-# "scalapack": ['git://https://github.com/Reference-ScaLAPACK/scalapack', 
+# "scalapack": ['git://https://github.com/Reference-ScaLAPACK/scalapack',
 #               'https://github.com/Reference-ScaLAPACK/scalapack/archive/5bad7487f496c811192334640ce4d3fc5f88144b.tar.gz'],
 "pastix": ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/pastix_5.2.3.tar.bz2'],
 }
@@ -423,13 +430,13 @@ pytest tests/regression/ -k "poisson_strong or stokes_mini or dg_advection"
 2. Configure jupyterlab
 
     Generate config file:
-    
+
     ```bash
     jupyter notebook --generate-config
     ```
 
     Set `use_redirect_file` to `False` in file `~/.jupyter/jupyter_notebook_config.py`
-    
+
     ```python
     c.NotebookApp.use_redirect_file = False
     ```
@@ -452,20 +459,28 @@ pytest tests/regression/ -k "poisson_strong or stokes_mini or dg_advection"
 
 4. Configure kernels
 
-    1. Activate env: 
+    1. Activate env:
 
         ```console
         $ source /your/env/path/activate
         ```
 
-    2. Add kernels: 
+    2. Add kernels:
 
         ```console
         (your-venv)$ ipython kernel install --name "local-venv" --user
         ```
 
-        Now you need check the python path in `kernel.json`. Make sure it is the python in your env. Otherwise, correct it.
+        The output should looks like:
+        ```console
+        Installed kernelspec local-venv in /path/to/kernels/local-venv
+        ```
+        where the path `/path/to/kernels/local-venv` should have different name in your enviornment.
 
+        Also, we can find the kernelspec path by run `jupyter kernelspec list`, which will output all avaialbe kernels with its path.
+
+        Now we need check the python path in `kernel.json`, which is located in the above path.
+        Make sure it is the python in your env. Otherwise, correct it.
 
     3. Add environment variables to `kernel.json`:[^kernels]
 
@@ -530,7 +545,7 @@ The example for `firedrake/complex-int32-mkl-debug` is as follows:
 
 Install WSL (Windows Subsystem for Linux) on Windows (the system installed is `Ubuntu` by default) and then install Firedrake as before.
 
-### Install WSL 
+### Install WSL
 
 To install WSL, please see https://docs.microsoft.com/zh-cn/windows/wsl/install.
 
@@ -564,6 +579,16 @@ First, install Homebrew[^brew], and then use Homebrew to install python3. After 
 Please install `pkgconf` before start the installation if you add package `p4est` for PETSc.
 
 [^brew]: Homebrew https://brew.sh/
+
+### 'ld: unknown option: -commons'
+
+When update Xcode commandline tool to 15, there will be an issue 'ld: unknow option: -commons'.
+
+Add `-Wl,-ld_classic` to `final_ldflags` in file `mpicc` located in petsc bin fold, which should be `src/petsc/default/bin` in firedrake directory.
+
+```shell
+final_ldflags=" -Wl,-ld_classic -Wl,-rpath,/opt/homebrew/opt/openblas/lib -L/opt/homebrew/opt/openblas/lib -Wl,-commons,use_dylibs"
+```
 
 ## Linux Server
 
@@ -635,7 +660,7 @@ The Firedrake team provides a way[^firedrake-spack] to install Firedrake based o
         spack -e $SPACK_ENV config add concretizer:unify:true
         ```
 
-     2. Add firedrake repo 
+     2. Add firedrake repo
 
         We add the firedrake repo to the created space env
 

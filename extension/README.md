@@ -3,8 +3,9 @@
 ## Build or install
 
 ```bash
-python -m build
-pip install --editable .
+python3 -m pip install build
+python3 -m build
+python3 -m pip install --editable .
 ```
 
 ## Verify
