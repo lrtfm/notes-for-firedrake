@@ -136,3 +136,4 @@ firedrake/pvd
 _build/
 *.logs
 *.pdf
+.vscode/

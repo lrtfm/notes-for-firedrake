@@ -8,6 +8,7 @@ pip install Pillow
 sudo apt install plantuml                 # for sphinxcontrib-plantuml
 pip install -U sphinxcontrib-plantuml
 pip install -U sphinxcontrib-tikz
+pip3 install --upgrade docutils==0.17.1   # https://sourceforge.net/p/docutils/patches/195/
 ```
 
 ## MyST

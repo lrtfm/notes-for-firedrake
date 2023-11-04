@@ -1,0 +1,8 @@
+.bd-main {
+    flex-grow: 1;
+}
+
+.bd-main .bd-content {
+    display: flex;
+    justify-content: left;
+}

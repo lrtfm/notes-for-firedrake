@@ -23,11 +23,12 @@ parts:
   - file: installation/install
   - file: installation/install_without_internet_access
   - file: installation/colab
-- caption: Additional Infomation
+- caption: Additional Information
   numbered: false
   chapters:
   - file: installation/ask_for_help
   - file: installation/other_fem_libs
+  - file: linux/debug
   - file: python/jupyter_book.md
   - file: linux/linux_proxy
   - file: editor/vscode
