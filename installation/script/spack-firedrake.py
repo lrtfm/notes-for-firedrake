@@ -310,8 +310,12 @@ log.debug(spack_env)
 # >>> import platform
 # >>> platform.linux_distribution()
 # ('CentOS Linux', '8.5.2111', '')
-import platform
-dist = platform.linux_distribution()
+if sys.version_info < (3, 8):
+    import platform
+    dist = platform.linux_distribution()
+else:
+    import distro
+    dist = distro.linux_distribution()
 need_external_openssl = dist[0].startswith("CentOS") and dist[1].startswith("8")
 
 with environment(**spack_env):

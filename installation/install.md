@@ -13,14 +13,15 @@ Otherwise, please refer to {doc}`install_without_internet_access`.
 
 ## Ubuntu
 
+### Install with default options
+
 The easiest way to intall firedrake is to download the installation script `firedrake-install` and run it using Python.
 This method will intall the real number version by defaults.
 
 1. Download the installation script
 
    ```bash
-   curl -O \
-   https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+   curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
    ```
 
 2. Install by running the script
@@ -67,122 +68,127 @@ pip install gmsh, meshio
 ```
 ````
 
-### Installation `real-int32` and/or `real-int32-debug`
+### Test and run examples
+
+#### Test firedrake
+
+```bash
+source <path-to-firedrake-env>/bin/activate
+cd $VIRTUAL_ENV/src/firedrake
+pytest tests/regression/ -k "poisson_strong or stokes_mini or dg_advection"
+```
+
+#### Run examples
+
+Create a python file `example.py` with the following content:
+
+```python
+from firedrake import *
+
+N = 8
+mesh = RectangleMesh(nx=N, ny=N, Lx=1, Ly=1)
+x, y = SpatialCoordinate(mesh)
+f = sin(pi*x)*sin(pi*y)
+g = Constant(0)
+
+V = FunctionSpace(mesh, 'CG', degree=1)
+
+u, v = TrialFunction(V), TestFunction(V)
+a = inner(grad(u), grad(v))*dx
+L = inner(f, v)*dx
+
+bc = DirichletBC(V, g=g, sub_domain='on_boundary')
+
+u_h = Function(V, name='u_h')
+solve(a == L, u_h, bcs=bc)
+```
+
+Run in serial:
+```bash
+python example.py
+```
+
+Run in parallel:
+```bash
+mpiexec -n 4 python example.py
+```
+
+### Install with custom options
+
+#### Installation `real-int32` and/or `real-int32-debug`
 
 1. Download the installation script
 
    ```bash
-   curl -O \
-   https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+   curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
    ```
 
 2. Enable PETSc's debug option (optional)
+
+   This option is turned off in firedrake by default. If you need to turn it on, you can use the following command to enable it.
 
    ```bash
    DEBUG='-debug'
    sed -i.bak -e 's/\(--with-debugging=\)0/\11/g' firedrake-install
    ```
 
-3. Update the package of the system
-
-   ```bash
-   sudo apt-get update
-   sudo apt-get install pkg-config # for p4est
-   ```
-
-4. Install
+3. Install
 
    ```bash
    PETSC_CONFIGURE_OPTIONS=" \
-       --download-fftw --download-mmg \
-       --download-p4est --download-parmmg --download-triangle \
-       --download-tetgen --download-ctetgen --download-hpddm --download-libpng \
-       --download-slepc --download-pragmatic --download-eigen" \
+       --download-fftw --download-mmg --download-p4est --download-parmmg \
+       --download-triangle --download-tetgen --download-ctetgen \
+       --download-hpddm --download-libpng \
+       --download-pragmatic --download-eigen" \
    python3 firedrake-install --disable-ssh \
        --documentation-dependencies \
-       --venv-name $HOME/firedrake/real-int32$DEBUG
-   ```
-
-### Installation `complex-int32` and/or `complex-int32-debug`
-
-1. Download the installation script
-
-   ```bash
-   curl -O \
-   https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-   ```
-
-2. Enable PETSc's debug option (optional)
-
-   ```bash
-   DEBUG='-debug'
-   sed -i.bak -e 's/\(--with-debugging=\)0/\11/g' firedrake-install
-   ```
-
-3. Update the package of the system
-
-   ```bash
-   sudo apt-get update
-   sudo apt-get install pkg-config # for p4est
-   ```
-
-4. Install
-
-   ```bash
-   PETSC_CONFIGURE_OPTIONS=" \
-       --download-fftw --download-mmg \
-       --download-p4est --download-parmmg --download-triangle \
-       --download-tetgen --download-ctetgen --download-hpddm --download-libpng \
-       --download-slepc --download-pragmatic --download-eigen \
-       --download-scalapack --download-mumps" \
-   python3 firedrake-install --disable-ssh \
-       --documentation-dependencies  \
-       --petsc-int-type int32 --complex \
-       --venv-name $HOME/opt/firedrake/complex-int32$DEBUG
-    ```
-
-###  Install `complex-int64` and/or `complex-int64-debug`
-
-1. Download the installation script
-
-   ```bash
-   curl -O \
-   https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-   ```
-
-2. Enable PETSc's debug option (optional)
-
-   ```bash
-   DEBUG='-debug'
-   sed -i.bak -e 's/\(--with-debugging=\)0/\11/g' firedrake-install
-   ```
-
-3. Update the package of the system
-
-   ```bash
-   sudo apt-get update
-   sudo apt-get install pkg-config
-   ```
-
-4. Install
-
-   ```bash
-   PETSC_CONFIGURE_OPTIONS=" \
-       --download-fftw --download-mmg \
-       --download-p4est --download-parmmg --download-triangle \
-       --download-tetgen --download-ctetgen --download-hpddm --download-libpng \
-       --download-slepc --download-scalapack --download-mumps" \
-   python3 firedrake-install --disable-ssh \
-       --documentation-dependencies  \
-       --petsc-int-type int64 --complex \
-       --venv-name $HOME/firedrake/complex-int64$DEBUG
+       --netgen --slepc \
+       --venv-name $HOME/opt/firedrake/firedrake-real-int32$DEBUG
    ```
 
    ```{note}
+   If you would like to install int64 version, please use `--petsc-int-type int64` instead.
+
    `pragmatic` cannot be used with `int64`
    ```
 
-### Installation Example with MKL
+
+#### Installation `complex-int32`, and/or `complex-int32-debug`
+
+1. Download the installation script
+
+   ```bash
+   curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+   ```
+
+2. Enable PETSc's debug option (optional)
+
+   ```bash
+   DEBUG='-debug'
+   sed -i.bak -e 's/\(--with-debugging=\)0/\11/g' firedrake-install
+   ```
+
+3. Install
+
+   ```bash
+   PETSC_CONFIGURE_OPTIONS=" \
+       --download-fftw --download-mmg --download-p4est --download-parmmg \
+       --download-triangle --download-tetgen --download-ctetgen \
+       --download-hpddm --download-libpng" \
+   python3 firedrake-install --disable-ssh \
+       --documentation-dependencies  \
+       --netgen --slepc \
+       --petsc-int-type int32 --complex \
+       --venv-name $HOME/opt/firedrake/firedrake-complex-int32$DEBUG
+    ```
+
+#### Installation with MKL
+
+If you want to use solvers provided by MKL, you can follow the following steps to install firedrake with MKL
+
+```{warning}
+The following steps are not tested for the recent version of firedrake.
+```
 
 1. Install mkl
 
@@ -206,13 +212,6 @@ pip install gmsh, meshio
       sudo apt install intel-oneapi-mkl
       sudo apt install intel-oneapi-mkl-devel
       ```
-
-2. Update the packages of the system
-
-   ```bash
-   sudo apt-get update
-   sudo apt-get install pkg-config # for p4est
-   ```
 
 3. Download the installation script and enable the debug option if necessary
 
@@ -246,7 +245,7 @@ pip install gmsh, meshio
            --with-mkl_cpardiso-dir=/opt/intel/oneapi/mkl/latest" \
    python3 firedrake-install --disable-ssh --documentation-dependencies \
        --with-blas=/opt/intel/oneapi/mkl/latest \
-       --venv-name firedrake/real-int32-mkl-debug
+       --venv-name $HOME/opt/firedrake/firedrake-real-int32-mkl-debug
    ```
 
 5. Fix the error on `mkl_cpardiso`
@@ -283,6 +282,7 @@ pip install gmsh, meshio
                getenv = os.environ.get
       ```
 
+      ````{note}
       The value of BLASLAPACK_LIB is
 
       ```bash
@@ -300,6 +300,7 @@ pip install gmsh, meshio
           -lmkl_intel_lp64 -lmkl_core -lmkl_gnu_thread \
           -lmkl_blacs_intelmpi_lp64 -lgomp -ldl -lpthread"
       ```
+      ````
 
    2. Recompile and install petsc4py (in the activated Firedrake environment)
 
@@ -339,80 +340,59 @@ python3 firedrake-install --disable-ssh \
 
 If you encounter the same error of solver `mkl_cpardiso`, you can fix it by using the same method as before.
 
-### Some notes on petsc
+#### Some notes on options for petsc
 
-#### PETSc with X
+1. Enable PETSc with X
 
-1. Install `libx11-dev`
+   1. Install `libx11-dev`
+   
+      ```bash
+      sudo apt install libx11-dev
+      ```
+   
+   2. Enable `--with-x=1` option
+
+      This option is turned off in firedrake by default.
+      If you need to turn it on, you can use the following command to enable it before run the install script.
+
+      ```bash
+      sed -i.bak -e 's/\(--with-x=\)0/\11/g' firedrake-install
+      ```
+
+2. Add `bin` path of petsc to `PATH`
+   
+   The `bin` directory of petsc provides some useful tools, but it is not added to the `PATH` by default.
+   We can define command `add-petsc-bin`.
 
    ```bash
-   sudo apt install libx11-dev
+   alias add-petsc-bin='export \
+       PATH=$PATH:$(dirname $(which python))/../src/petsc/lib/petsc/bin:$(\
+       dirname $(which python))/../src/petsc/default/bin'
    ```
 
-2. Add `--with-x=1` to `PETSC_CONFIGURE_OPTIONS`, and then follow the instructions in the previous section.
+   Executing it in activated firedrake env will add the petsc/bin to `PATH`.
 
-#### Add petsc bin to path
+3. Download package for petsc
 
-We can define command `add-petsc-bin`. Executing it in activated firedrake env will add the petsc/bin to PATH
+   Sometimes, some of the packages that petsc depends on cannot be downloaded automatically.
+   We can add the option
+   
+   ```bash
+   --with-packages-download-dir=<path/to/petsc/packages>
+   ```
+   
+   to command `configure` obtain the list of required packages.
+   Then download these packages manually and put them into the path.
+   Afterwards, configure it again with the above option.
+   
+   The python script [`download_petsc_pkgs.py`](./script/download_petsc_pkgs.py) can be used to download the packages.
+   Save the output of petsc configure to a file, for example [`pkgs_info.txt`](./script/pkgs_info.txt).
+   Then run the following command to download packages:
 
-```bash
-alias add-petsc-bin='export \
-    PATH=$PATH:$(dirname $(which python))/../src/petsc/lib/petsc/bin:$(\
-    dirname $(which python))/../src/petsc/default/bin'
+   ```bash
+   python3 download_petsc_pkgs.py -d <path/to/petsc/packages> pkgs_info.txt
+   ```
 
-alias firedrake-mkl="export OMP_NUM_THREADS=1 && \
-    source ~/firedrake/real-int32-mkl-debug/bin/activate && add-petsc-bin"
-```
-
-#### Download package for petsc
-
-Sometimes, some of the packages that petsc depends on cannot be downloaded automatically.
-We can add the option
-
-```bash
---with-packages-download-dir=<path/to/petsc/packages>
-```
-
-to obtain the list of required packages,
-and then download these packages manually and put them into the path. Afterwards, configure it again with the above option.
-
-The following python script can be used to download multiple packages.
-Please modify the corresponding commands according to your needs.
-
-```python
-packages = {
-# "scalapack": ['git://https://github.com/Reference-ScaLAPACK/scalapack',
-#               'https://github.com/Reference-ScaLAPACK/scalapack/archive/5bad7487f496c811192334640ce4d3fc5f88144b.tar.gz'],
-"pastix": ['http://ftp.mcs.anl.gov/pub/petsc/externalpackages/pastix_5.2.3.tar.bz2'],
-}
-fail = {}
-for name, paths in packages.items():
-    print(name)
-    flag = False
-    for path in paths:
-        print(f'try path: {path}')
-        if path.startswith('git'):
-            ret = os.system(f'git clone {path[6:]}')
-        else:
-            ret = os.system(f'curl -L -x socks5h://localhost:5000 -O {path}')
-        if ret == 0:
-            flag = True
-            break
-
-    if flag == False:
-        fail[name] = paths
-        print(f'Fail to download {name}: {paths}')
-
-print('packages failed to download:')
-print(fail)
-```
-### Test
-
-```bash
-source firedrake/bin/activate
-cd $VIRTUAL_ENV/src/firedrake
-pytest tests/regression/ -k "poisson_strong or stokes_mini or dg_advection"
-```
 ### Using firedrake in Jupyter-lab
 
 1. Install `jupyterlab`
@@ -508,6 +488,7 @@ pytest tests/regression/ -k "poisson_strong or stokes_mini or dg_advection"
          }
         }
         ```
+
 ### Update firedrake
 
 Generally, you can simply run `firedrake-update` in the activated environment to update firedrake.
@@ -541,6 +522,7 @@ The example for `firedrake/complex-int32-mkl-debug` is as follows:
         --with-mkl_cpardiso-dir=/opt/intel/oneapi/mkl/latest" \
     firedrake-update --rebuild --no-update-script --with-blas=/opt/intel/oneapi/mkl/latest
     ```
+
 ## Windows
 
 Install WSL (Windows Subsystem for Linux) on Windows (the system installed is `Ubuntu` by default) and then install Firedrake as before.
@@ -566,29 +548,47 @@ Follow the installation method for Ubuntu.
     Y: /mnt/y drvfs auto,users,dev,exec,rw,async,relatime,uid=1000,gid=1000 0 0
     ```
 
-
 3. Mount:
 
     ```bash
     sudo mount -a
     ```
 -->
+
 ## MacOS
+
 First, install Homebrew[^brew], and then use Homebrew to install python3. After that, install Firedrake directly, similar to Ubuntu.
 
 Please install `pkgconf` before start the installation if you add package `p4est` for PETSc.
 
 [^brew]: Homebrew https://brew.sh/
 
-### 'ld: unknown option: -commons'
+1. Install Homebrew
 
-When update Xcode commandline tool to 15, there will be an issue 'ld: unknow option: -commons'.
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
 
-Add `-Wl,-ld_classic` to `final_ldflags` in file `mpicc` located in petsc bin fold, which should be `src/petsc/default/bin` in firedrake directory.
+2. Install python3
 
-```shell
-final_ldflags=" -Wl,-ld_classic -Wl,-rpath,/opt/homebrew/opt/openblas/lib -L/opt/homebrew/opt/openblas/lib -Wl,-commons,use_dylibs"
-```
+   When installing python3, you can choose the version you want to install. For example, you can install python3.11 as follows.
+
+   ```bash
+   brew install python@3.11
+   ```
+
+3. Install firedrake
+
+   Now, you can follow the installation method for Ubuntu.
+
+   ```bash
+   curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
+   python3.11 firedrake-install
+   ```
+
+   ```{note}
+   Please make sure use the python installed by Homebrew. You can check it by `which python3.11`.
+   ```
 
 ## Linux Server
 
@@ -767,19 +767,21 @@ This is not needed. As mpich support slurm by default with hydary.
 
 使用 `spack` 安装依赖包, 然后类似于 `Ubuntu` 方式安装 (需要禁用包管理器： `--no-package-manager`)
 
-可参考如下脚本:
+可参考 [spack-firedrake.py](./script/spack-firedrake.py).
 
-https://raw.githubusercontent.com/lrtfm/notes-for-firedrake/main/scripts/spack-firedrake.py
 -->
 
 ## Docker
 
 ### Images
 
-1. firedrake team: https://hub.docker.com/u/firedrakeproject.
+Firedrake team provides some docker images for users to use: https://hub.docker.com/u/firedrakeproject.
 
+<!--
 2. lrtfm/firedrake: https://hub.docker.com/r/lrtfm/firedrake
+-->
 
+<!--
 ### TODO: Trimming the Docker image
 
 The Docker image is too large, so we can consider deleting some unnecessary files.
@@ -804,3 +806,4 @@ find $firedrake -name "docs" | xargs rm -rf
 docker export
 docker import
 ```
+-->

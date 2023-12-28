@@ -28,6 +28,7 @@ parts:
   chapters:
   - file: installation/ask_for_help
   - file: installation/other_fem_libs
+  - file: linux/a_quick_start
   - file: linux/debug
   - file: python/jupyter_book.md
   - file: linux/linux_proxy

@@ -1,0 +1,7 @@
+Download the following packages to /Users/xyz/pkgs 
+
+hwloc ['https://download.open-mpi.org/release/hwloc/v2.9/hwloc-2.9.3.tar.gz', 'https://web.cels.anl.gov/projects/petsc/download/externalpackages/hwloc-2.9.3.tar.gz']
+openblas ['git clone https://github.com/xianyi/OpenBLAS.git', 'https://github.com/xianyi/OpenBLAS/archive/v0.3.21.tar.gz']
+tetgen ['http://www.tetgen.org/1.5/src/tetgen1.6.0.tar.gz', 'https://web.cels.anl.gov/projects/petsc/download/externalpackages/tetgen1.6.0.tar.gz']
+
+Then run the script again

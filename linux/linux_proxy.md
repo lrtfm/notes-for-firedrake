@@ -1,4 +1,5 @@
 # Proxy for Linux 
+
 1. Enable proxy through dynamic port forwarding in ssh (the sockets proxy port is 5000)
 
     ```bash
@@ -7,12 +8,24 @@
 
 2. apt proxy 
 
-    ```bash
-    sudo apt -o Acquire::http::proxy="socks5h://127.0.0.1:5000" update
-    ```
+    1. `-o` option
+
+        ```bash
+        sudo apt -o Acquire::http::proxy="socks5h://127.0.0.1:5000" update
+        ```
+
+    2. configure file `/etc/apt/apt.conf`
+
+        ```
+        Acquire::http::proxy "http://127.0.0.1:8000/";
+        Acquire::ftp::proxy "ftp://127.0.0.1:8000/";
+        Acquire::https::proxy "https://127.0.0.1:8000/";
+        ```
 
 3. curl proxy
 
+   use configure file `~/.curlrc` or command line option `-x`
+
     ```bash
-    curl -x socks5h://localhost:5000 -O https://url/to/you/file
+    curl -x socks5h://localhost:5000 -L -O <url>
     ```
