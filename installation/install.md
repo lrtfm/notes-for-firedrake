@@ -581,16 +581,16 @@ Here is an example illustrating how to install firedrake with the above option.
 
 2. Configure jupyterlab
 
-    Generate config file:
+    Generate config file for customizing jupyter lab:
 
     ```bash
-    jupyter notebook --generate-config
+    jupyter lab --generate-config
     ```
 
-    Set `use_redirect_file` to `False` in file `~/.jupyter/jupyter_notebook_config.py`
+    Set password for jupyter lab:
 
-    ```python
-    c.NotebookApp.use_redirect_file = False
+    ```bash
+    jupyter lab password  #
     ```
 
 3. Configure Browser
@@ -761,6 +761,67 @@ Please install `pkgconf` before start the installation if you add package `p4est
    ```{note}
    Please make sure use the python installed by Homebrew. You can check it by `which python3.11`.
    ```
+
+### MacOS Install Notes (updated on 20240322)
+
+When updated the system to Sonoma 14.4 and Xcode to 15.3. Firedrake can not be installed because of the following reasons:
+
+1. Chaco needs cflags `-Wno-deprecated-non-prototype -Wno-implicit-int` (see https://gitlab.com/petsc/petsc/-/issues/1557#note_1817089106)
+2. Openblas needs `-Wno-int-conversion` (It's actually a bug, see https://github.com/OpenMathLib/OpenBLAS/pull/4565)
+
+3. Slepc needs patch https://gitlab.com/slepc/slepc/-/merge_requests/638
+
+4. firedrake cython needs flag `+extra_compile_args = ["-Wno-incompatible-function-pointer-types"]"`
+
+#### Solution
+
+A script is created with some patches can be used to install firedrake.
+Download it here [script/firedrake-install-scripts.tar](script/firedrake-install-scripts.tar)
+
+Or you can following the following instructions to install firedrake (without slepc).
+
+1. Edit the script firedrake-install  at line786: https://github.com/firedrakeproject/firedrake/blob/1bbd9dfa3b9a7dc7e501cc094b93067e89c6448c/scripts/firedrake-install#L786
+
+    ```
+                petsc_options.add("--CFLAGS=-Wno-implicit-function-declaration")
+    ```
+    to
+    ```
+                petsc_options.add("--CFLAGS=-Wno-implicit-function-declaration -Wno-int-conversion -Wno-deprecated-non-prototype -Wno-implicit-int")
+    ```
+    to overcome the issue for now.
+
+    Here, -Wno-deprecated-non-prototype -Wno-implicit-int for chaco, and -Wno-int-conversion for openblas.
+
+2. If you encounter an error with Cython when compiling Cython code in Firedrake, you may need to apply the following patch to Firedrake.
+
+    ```
+    diff --git a/setup.py b/setup.py
+    index fae92d9a7..cb21b3bff 100644
+    --- a/setup.py
+    +++ b/setup.py
+    @@ -68,11 +68,13 @@ link_args = ["-L%s/lib" % d for d in dirs] + ["-Wl,-rpath,%s/lib" % d for d in d
+    libspatialindex_so = Path(rtree.core.rt._name).absolute()
+    link_args += [str(libspatialindex_so)]
+    link_args += ["-Wl,-rpath,%s" % libspatialindex_so.parent]
+    +extra_compile_args = ["-Wno-incompatible-function-pointer-types"]
+    
+    extensions = [Extension("firedrake.cython.{}".format(ext),
+                            sources=[os.path.join("firedrake", "cython", "{}.pyx".format(ext))],
+                            include_dirs=include_dirs,
+                            libraries=libs,
+    +                        extra_compile_args=extra_compile_args,
+                            extra_link_args=link_args,
+                            cython_compile_time_env=cython_compile_time_env) for (ext, libs) in cythonfiles]
+    if 'CC' not in env:
+    ```
+
+
+
+
+### Questions
+
+1. How to use blas/lapack provided by Apple?
 
 ## Linux Server
 
