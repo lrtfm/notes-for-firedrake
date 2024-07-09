@@ -1,0 +1,100 @@
+#!/bin/bash
+
+set -e
+if [ $# -eq 0 ]; then
+    PROG=$(basename $0)
+    echo ""
+    echo "Usage: $PROG command [args...]"
+    echo "Run command in docker container of firedrake."
+    echo ""
+    echo "Exampls:"
+    echo "    $PROG python my-python-file.py"
+    echo "    $PROG mpiexec -n 16 python my-python-file.py"
+    echo ""
+    exit 1
+fi
+
+is_true () {
+    _VAL=$(echo "${1:-N}" | tr '[:upper:]' '[:lower:]')
+    [[ ${_VAL} =~ [1-9]|t|true|y|yes|on ]] && return 0  # true
+    return 1  # false
+}
+
+print_msg () {
+    MSG=$1
+    TERM_WIDTH=${TERM_WIDTH:-$(tput cols)}
+    PADDING_WIDTH=$(( (${TERM_WIDTH} - 2 - ${#MSG})/2 ))
+    PADDING=$(for i in $(seq 1 ${PADDING_WIDTH}); do echo -n =; done)
+    echo "$PADDING $MSG $PADDING"$([ $(( ${#MSG}%2 )) == 1 ]  && echo -n = || echo -n "")
+}
+
+TERM_WIDTH=80
+FORCE_BUILD=$( is_true ${FORCE_BUILD} && echo Y || echo N)
+DEBUG=$( is_true ${DEBUG:-$FORCE_BUILD} && echo "" || echo ":" )
+
+${DEBUG} print_msg "DEBUG VARS BEGIN"
+${DEBUG} echo -e "VARs:\n\tDEBUG: \"${DEBUG:-Y}\"\n\tFORCE_BUILD: \"$FORCE_BUILD\""
+${DEBUG} print_msg "DEBUG VARS END"
+
+create_dockerfile () {
+    _BASE_IMAGE=$1
+    _DOCKERFILE=$2
+    cat <<EOF > $_DOCKERFILE
+FROM $_BASE_IMAGE
+
+USER root
+RUN echo -e "[safe]\n\tdirectory = *\n" >> /etc/gitconfig
+
+USER firedrake
+WORKDIR /home/firedrake
+
+RUN git clone https://github.com/lrtfm/fdutils.git
+RUN bash -c ". /home/firedrake/firedrake/bin/activate && pip install pqdm gmsh"
+RUN bash -c ". /home/firedrake/firedrake/bin/activate && cd fdutils && make develop"
+EOF
+
+    ${DEBUG} print_msg "THE DOCKER FILE BEGIN"
+    ${DEBUG} cat $_DOCKERFILE
+    ${DEBUG} print_msg "THE DOCKER FILE END"
+}
+
+if [[ "x$IMAGE" == "x" ]]; then
+    BASE_IMAGE=firedrakeproject/firedrake
+    IMAGE_NAME=firedrake-$(id -u -n)
+    TAG=$(docker image ls --format "{{ .Tag }}" $IMAGE_NAME | sort -r | head -n1)
+    if [[ "x$TAG" == "x" || "$FORCE_BUILD" == "Y" ]]; then
+        TEMP_DOCKERFILE=$(mktemp .Dockerfile.XXXXXXXXXXXXXXXX)
+        trap 'rm -f -- "$TEMP_DOCKERFILE"' EXIT
+        create_dockerfile $BASE_IMAGE $TEMP_DOCKERFILE
+
+        if ! docker image inspect $BASE_IMAGE > /dev/null 2>&1; then
+            docker pull $BASE_IMAGE
+        fi
+        TAG=$(docker inspect -f '{{ .Created }}' $BASE_IMAGE | sed -e 's/T.*//' -e 's/-//g')
+        docker build $BUILD_ARGS -t $IMAGE_NAME:$TAG -f $TEMP_DOCKERFILE .
+    fi
+    IMAGE=$IMAGE_NAME:$TAG
+fi
+
+FD_INFO=$(docker run --rm $IMAGE bash -c 'echo $(id -u)\;$(id -g -n)\;$HOME\;$PATH\;')
+IFS=';' read -r FD_UID FD_GNAME FD_HOME FD_PATH <<< "$FD_INFO"
+[[ $(id -u) != ${FD_UID} ]] && FD_HOME=/work
+FD_ENV=/home/firedrake/firedrake
+FD_PATH=${FD_ENV}/bin:${FD_PATH}
+
+${DEBUG} print_msg "THE CMD BEGIN"
+${DEBUG} echo -ne "IMAGE:\n\t"; ${DEBUG} echo "$IMAGE"
+${DEBUG} echo -ne "COMMAND:\n\t\x60"; ${DEBUG} echo -n "$@"; ${DEBUG} echo -e "\x27"
+${DEBUG} echo -ne "HOME:\n\t"; ${DEBUG} echo "$FD_HOME"
+${DEBUG} echo -ne "PATH:\n\t"; ${DEBUG} echo "$FD_PATH"
+${DEBUG} print_msg "THE CMD END"
+
+docker run --rm -ti -v $(pwd):/work -w /work \
+    -u $(id -u):$(id -g) --group-add ${FD_GNAME} \
+    -e HOME=${FD_HOME} \
+    -e PATH=${FD_PATH} \
+    -e VIRTUAL_ENV=${FD_ENV} \
+    -e PYOP2_CACHE_DIR=/work/.cache \
+    -e FIREDRAKE_TSFC_KERNEL_CACHE_DIR=/work/.cache \
+    $IMAGE \
+    "$@"

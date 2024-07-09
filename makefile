@@ -2,29 +2,36 @@
 
 all: local
 
+NAME=firedrake-notes
 OUTPUT=${HOME}/.aux/firedrake-notes
+LATEX_BASE=${OUTPUT}/_build/latex
+HTML_BASE=${OUTPUT}/_build/html
+TEX=${LATEX_BASE}/${NAME}.tex
+PDF=${LATEX_BASE}/${NAME}.pdf
 
 pdf:
-	jupyter-book build --path-output ${OUTPUT}  --builder pdflatex ./
-	cp ${OUTPUT}/_build/latex/firedrake-notes.pdf ./
+	jupyter-book build --path-output ${OUTPUT}  --builder latex ./
+	gsed -i.bak -e 's/\([^a-zA-Z0-9\s;,.]\)\s\+\(\\sphinxstylestrong\)/\1\2/g' ${TEX}
+	cd ${LATEX_BASE} && latexmk -xelatex ${NAME}.tex
+	cp ${PDF} ./
 
 html:
 	jupyter-book build --path-output ${OUTPUT} ./
 
 push: html
 	@echo Syncing to zzyang.net
-	@rsync -rP --delete ${OUTPUT}/_build/html/ zzyang.net:/var/www/html/firedrake-notes/ > rsync.logs
+	@rsync -rP --delete ${HTML_BASE}/ zzyang.net:/var/www/html/firedrake-notes/ > ${OUTPUT}/rsync.logs
 	@echo You can look at your book by click the link
 	@echo "\n\thttp://zzyang.net/firedrake-notes/index.html"
 
 local: html
 	@echo Syncing to local directory
-	@rsync -rP --delete ${OUTPUT}/_build/html/ ~/opt/Sites/firedrake-notes/ > rsync-local.logs
+	@rsync -rP --delete ${HTML_BASE}/ ~/opt/Sites/firedrake-notes/ > ${OUTPUT}/rsync-local.logs
 	@echo "\nYou can look at your book by click the link"
 	@echo "\n\thttp://localhost/~zzyang/firedrake-notes/index.html"
 
 clean:
 	jupyter-book clean ./
-	rm -rf ${OUTPUT}/_build/html/
-	rm -rf ${OUTPUT}/_build/latex/
+	rm -rf ${HTML_BASE}/
+	rm -rf ${LATEX_BASE}/
 

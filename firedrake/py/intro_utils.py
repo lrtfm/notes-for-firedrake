@@ -1,4 +1,5 @@
 import firedrake as fd
+import firedrake.pyplot as fdplt
 from firedrake.petsc import PETSc
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -12,7 +13,7 @@ __all__ = ('plot_mesh_with_label', 'get_mesh_size', 'printf', 'sync_printf', 'Nu
 def plot_mesh_with_label(mesh, axes=None):
     if axes is None:
         fig, axes = plt.subplots(figsize=[4, 4])
-    fd.triplot(mesh, axes=axes, boundary_kw={'lw': 3})
+    fdplt.triplot(mesh, axes=axes, boundary_kw={'lw': 3})
     axes.set_aspect(aspect='equal')
     # ax.set_axis_off()
     axes.legend(loc='upper left', bbox_to_anchor=(1, 1))

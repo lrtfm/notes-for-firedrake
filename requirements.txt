@@ -1,7 +1,8 @@
-jupyter-book==0.15.1
-docutils==0.17.1
+jupyter-book
+docutils
 Pillow
 sphinxcontrib-plantuml
 sphinxcontrib-tikz
 matplotlib
 numpy
+nbdime
