@@ -1016,6 +1016,8 @@ This is not needed. As mpich support slurm by default with hydary.
 
 Firedrake team provides some docker images for users to use: https://hub.docker.com/u/firedrakeproject.
 
+For Docker on a server, there may be issues related to file permissions. Try the following script:
+[`firedrake-run`](https://gist.github.com/lrtfm/93d55c6d8d5bc92d2c7551dd0048fd4f?permalink_comment_id=5024982#gistcomment-5024982)
 <!--
 2. lrtfm/firedrake: https://hub.docker.com/r/lrtfm/firedrake
 -->
