@@ -133,6 +133,7 @@ def adapt2():
 
         metric.interpolate(100*as_matrix([[1, 0], [0, 1]]))
 
+        # TODO: This does not work in parallel. The metric should be a local vector in PETSc.
         with metric.dat.vec_ro as vec, ometric.dat.vec as ovec, determinant.dat.vec as det:
             # vec.view()
             print(vec.max(), vec.min())

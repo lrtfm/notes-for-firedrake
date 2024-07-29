@@ -1,28 +1,29 @@
 from firedrake import *
 from firedrake.petsc import PETSc, OptionsManager
+from firedrake.cython.dmcommon import to_petsc_local_numbering
 import numpy as np
 import matplotlib.pylab as plt
 
 
-def to_petsc_local_numbering(vec, V):
-    section = V.dm.getGlobalSection()
+def to_petsc_local_numbering_for_local_vec(vec, V):
+    section = V.dm.getLocalSection()
     out = vec.duplicate()
     varray = vec.array_r
     oarray = out.array
     dim = V.value_size
     idx = 0
-    start, end = vec.getOwnershipRange()
     for p in range(*section.getChart()):
         dof = section.getDof(p)
+        off = section.getOffset(p)
+        # PETSc.Sys.syncPrint(f"dof = {dof}, offset = {off}")
         if dof > 0:
             off = section.getOffset(p)
-            assert off >= 0
             off *= dim
             for d in range(dof):
                 for k in range(dim):
-                    oarray[idx] = varray[off + dim * d + k - start]
+                    oarray[idx] = varray[off + dim * d + k]
                     idx += 1
-    assert idx == (end - start)
+    # PETSc.Sys.syncFlush()
 
     return out
 
@@ -101,10 +102,10 @@ def create_metric_from_indicator(indicator):
 def adapt(indicator):
     mesh = indicator.ufl_domain()
     metric = create_metric_from_indicator(indicator)
-    size = metric.dat.dataset.layout_vec.getSizes()
-    data = metric.dat._data[:size[0]]
-    v = PETSc.Vec().createWithArray(data, size=size, bsize=metric.dat.cdim, comm=metric.comm)
-    reordered = to_petsc_local_numbering(v, metric.function_space())
+    v = PETSc.Vec().createWithArray(metric.dat._data,
+                                    size=(metric.dat._data.size, None),
+                                    bsize=metric.dat.cdim, comm=metric.comm)
+    reordered = to_petsc_local_numbering_for_local_vec(v, metric.function_space())
     v.destroy()
     plex_new = mesh.topology_dm.adaptMetric(reordered, "Face Sets", "Cell Sets")
     mesh_new = Mesh(plex_new)
@@ -133,8 +134,8 @@ def test_adapt(dim=2, factor=2):
 def test_adapt_with_option(dim=2, factor=0.5):
     # adaptors: pragmatic, mmg, parmmg
     #   -dm_adaptor pragmatic
-    #   -dm_adaptor mmg
-    #   -dm_adaptor parmmg
+    #   -dm_adaptor mmg       # 2d or 3d (seq)
+    #   -dm_adaptor parmmg    # 3d (parallel)
     #   -dm_adaptor cellrefiner -dm_plex_transform_type refine_sbr
     parameters = {
         "dm_adaptor": "mmg",

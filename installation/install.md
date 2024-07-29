@@ -746,8 +746,19 @@ Please install `pkgconf` before start the installation if you add package `p4est
    When installing python3, you can choose the version you want to install. For example, you can install python3.11 as follows.
 
    ```bash
-   brew install python@3.11
+   brew install python3
+   brew install m4
    ```
+
+   ````{note}
+   If you using Xcode command line tool other then Xcode. You should install m4 using brew or patch the system with m4.
+   ```
+   xcode-select -p                      # this will print the path to command line tools
+   cd <the-path-to-command-line-tools>  # should be /Library/Developer/CommandLineTools
+   cd usr/bin
+   ln -s gm4 m4                         # need password for the system
+   ```
+   ````
 
 3. Install firedrake
 
@@ -755,79 +766,9 @@ Please install `pkgconf` before start the installation if you add package `p4est
 
    ```bash
    curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-install
-   python3.11 firedrake-install
+   $(brew --prefix)/bin/python3 firedrake-install
    ```
 
-   ```{note}
-   Please make sure use the python installed by Homebrew. You can check it by `which python3.11`.
-   ```
-
-### MacOS Install Notes (updated on 20240323)
-
-When updated the system to Sonoma 14.4 and Xcode to 15.3. Firedrake can not be installed because of the following reasons:
-
-1. Chaco needs cflags `-Wno-implicit-int` (see https://gitlab.com/petsc/petsc/-/issues/1557#note_1817089106). Any maybe you would like to add `-Wno-deprecated-non-prototype` to disable warnings when compiling Chaco.
-2. Openblas needs `-Wno-int-conversion` (It's actually a bug, see https://github.com/OpenMathLib/OpenBLAS/pull/4565)
-3. Firedrake Cython codes needs flag `-Wno-incompatible-function-pointer-types`
-4. The PETSc's current branch `firedrake` seems have [error on MUMPS when runing in parallel](https://lists.mcs.anl.gov/pipermail/petsc-users/2024-March/050482.html)
-
-For the details why we need the cflags, see the [potentially breaking changes](https://releases.llvm.org/16.0.0/tools/clang/docs/ReleaseNotes.html#potentially-breaking-changes) in LLVM 16 and 
-the [improvements to clang's diagnostics](https://releases.llvm.org/15.0.0/tools/clang/docs/ReleaseNotes.html#improvements-to-clang-s-diagnostics)
-in LLVM 15.
-In addtion, __It seems that the version of Apple clang is not same with that of LLVM clang.__
-
-#### Solution
-
-A script with some patches can be used to install firedrake with [old petsc](https://github.com/firedrakeproject/petsc/tree/Firedrake_20240312.0).
-Download it here [script/firedrake-install-scripts.tar](script/firedrake-install-scripts.tar)
-
-Or you can following the following instructions to install firedrake.
-
-1. Edit the script firedrake-install  at line786: https://github.com/firedrakeproject/firedrake/blob/1bbd9dfa3b9a7dc7e501cc094b93067e89c6448c/scripts/firedrake-install#L786
-
-    ```
-                petsc_options.add("--CFLAGS=-Wno-implicit-function-declaration")
-    ```
-    to
-    ```
-                petsc_options.add("--CFLAGS=-Wno-implicit-function-declaration -Wno-int-conversion -Wno-implicit-int")
-    ```
-    to overcome the issue for now.
-
-    Here, `-Wno-implicit-int` for chaco, and `-Wno-int-conversion` for openblas.
-
-2. If you would like to use MUMPS, using an old petsc version by add the following option to install command
-
-   ```
-   --package-branch petsc fe466959bc653a84ee2ebebfdc0f6a9532500c2e
-   ```
-
-3. If you encounter an error with Cython when compiling Cython code in Firedrake, you may need to apply the following patch to Firedrake.
-
-    ```
-    diff --git a/setup.py b/setup.py
-    index fae92d9a7..cb21b3bff 100644
-    --- a/setup.py
-    +++ b/setup.py
-    @@ -68,11 +68,13 @@ link_args = ["-L%s/lib" % d for d in dirs] + ["-Wl,-rpath,%s/lib" % d for d in d
-    libspatialindex_so = Path(rtree.core.rt._name).absolute()
-    link_args += [str(libspatialindex_so)]
-    link_args += ["-Wl,-rpath,%s" % libspatialindex_so.parent]
-    +extra_compile_args = ["-Wno-incompatible-function-pointer-types"]
-    
-    extensions = [Extension("firedrake.cython.{}".format(ext),
-                            sources=[os.path.join("firedrake", "cython", "{}.pyx".format(ext))],
-                            include_dirs=include_dirs,
-                            libraries=libs,
-    +                        extra_compile_args=extra_compile_args,
-                            extra_link_args=link_args,
-                            cython_compile_time_env=cython_compile_time_env) for (ext, libs) in cythonfiles]
-    if 'CC' not in env:
-    ```
-
-### Questions
-
-1. How to use blas/lapack provided by Apple?
 
 ## Linux Server
 
