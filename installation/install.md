@@ -384,6 +384,7 @@ Here is an example illustrating how to install firedrake with the above option.
     ```bash
     yang@606d6cb4b0c4:~/opt/firedrake$ cat install.sh
     PETSC_CONFIGURE_OPTIONS=" \
+        --with-packages-download-dir=$HOME/opt/firedrake/pkgs
         --download-fftw --download-mmg --download-p4est --download-parmmg \
         --download-triangle --download-tetgen --download-ctetgen \
         --download-hpddm --download-libpng \
