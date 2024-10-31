@@ -11,25 +11,25 @@ installation of [FEniCS, FEniCSx, Firedrake, NGSolve, gmsh](https://fem-on-colab
 
 About 3 minutes
 
-:::colabpy
+```colabpy
 try:
     import firedrake
 except ImportError:
     !wget "https://fem-on-colab.github.io/releases/firedrake-install-real.sh" \
         -O "/tmp/firedrake-install.sh" && bash "/tmp/firedrake-install.sh"
     import firedrake
-:::
+```
 
 ### Gmsh
 
-:::colabpy
+```colabpy
 try:
     import gmsh
 except ImportError:
     !wget "https://fem-on-colab.github.io/releases/gmsh-install.sh" \
         -O "/tmp/gmsh-install.sh" && bash "/tmp/gmsh-install.sh"
     import gmsh
-:::
+```
 
 ## Examples
 

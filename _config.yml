@@ -43,8 +43,8 @@ html:
   use_multitoc_numbering    : false # Continuous numbering across parts/chapters
   home_page_in_navbar       : true  # Whether to include your home page in the left Navigation Ba
   baseurl                   : https://zzyang.net/firedrake-notes
-  google_analytics_id       : G-CMTGSGQVCB
   analytics:
+    google_analytics_id       : G-CMTGSGQVCB
   extra_footer: |
     <div>
     <!-- By <a href="https://zzyang.net/">YANG Zongze</a>  -->
