@@ -30,6 +30,18 @@ local: html
 	@echo "\nYou can look at your book by click the link"
 	@echo "\n\thttp://localhost/~zzyang/firedrake-notes/index.html"
 
+clearoutput:
+	find . -name "*.ipynb" -not -path "*.ipynb_checkpoints*" | \
+		xargs python3 -m nbconvert \
+		--ClearOutputPreprocessor.enabled=True \
+		--ClearMetadataPreprocessor.enabled=True \
+		--ClearMetadataPreprocessor.preserve_cell_metadata_mask='[("tags")]' \
+		--inplace
+
+execute:
+	find . -name "*.ipynb" -not -path "*.ipynb_checkpoints*" | \
+		xargs python3 -m nbconvert --execute --inplace
+
 clean:
 	jupyter-book clean ./
 	rm -rf ${HTML_BASE}/

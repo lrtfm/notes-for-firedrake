@@ -13,7 +13,8 @@ parts:
   - file: firedrake/ns
   - file: firedrake/cahn_hilliard
   - file: firedrake/surface_pde
-  - file: petsc/petsc
+  - file: firedrake/petsc
+  - file: firedrake/dmplex-and-mesh
   - file: firedrake/kernels
   - file: firedrake/debug
   - file: firedrake/profile
