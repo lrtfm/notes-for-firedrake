@@ -1,4 +1,4 @@
-# Ask for help
+# Useful Links
 
 ## firedrake
 
@@ -26,6 +26,11 @@ __Slack__:
 __Mail list__:
 
 + https://mailman.ic.ac.uk/mailman/listinfo/firedrake
+
+## FEniCS
+
+__Course__
++ https://fenicsproject.org/pub/course/lectures/2017-nordic-phdcourse/
 
 ## PETSc
 
