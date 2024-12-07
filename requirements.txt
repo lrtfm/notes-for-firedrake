@@ -6,3 +6,4 @@ sphinxcontrib-tikz
 matplotlib
 numpy
 nbdime
+ipyparallel
