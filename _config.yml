@@ -31,7 +31,7 @@ bibtex_bibfiles:
 repository:
   url: https://github.com/lrtfm/notes-for-firedrake  # Online location of your book
   # path_to_book: notes # Optional path to your book, relative to the repository root
-  branch: notes # Which branch of the repository should be used when creating links (optional)
+  branch: main # Which branch of the repository should be used when creating links (optional)
 
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
@@ -48,7 +48,7 @@ html:
   extra_footer: |
     <div>
     <!-- By <a href="https://zzyang.net/">YANG Zongze</a>  -->
-    &copy; Copyright 2024.
+    &copy; Copyright 2025.
     </div>
 
   comments:
@@ -62,6 +62,7 @@ sphinx:
     # - sphinxcontrib.wavedrom
     - sphinxcontrib.plantuml
     - sphinxcontrib.tikz
+    - sphinx_last_updated_by_git
     # - sphinxcontrib.blockdiag
   config:
     html_show_copyright: false

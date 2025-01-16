@@ -3,7 +3,9 @@ docutils
 Pillow
 sphinxcontrib-plantuml
 sphinxcontrib-tikz
+sphinx-last-updated-by-git
 matplotlib
 numpy
 nbdime
 ipyparallel
+-e ./extension
