@@ -9,6 +9,7 @@ parts:
   chapters:
   - file: firedrake/poisson_I
   - file: firedrake/poisson_II
+  - file: firedrake/parabolic
   - file: firedrake/parallel
   - file: firedrake/ns
   - file: firedrake/cahn_hilliard
