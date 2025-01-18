@@ -13,8 +13,7 @@ PDF=${LATEX_BASE}/${NAME}.pdf
 NOTEBOOKS := $(shell find . -name "*.ipynb" -not -path "*.ipynb_checkpoints*" -not -path "*publish*")
 CHANGED_NOTEBOOKS := $(shell git diff --name-only -- '*.ipynb')
 # the path to executed ipynb files
-PUBLISH_DIR := publish
-
+PUBLISH_DIR := ${OUTPUT}/publish
 
 pdf:
 	jupyter-book build --path-output ${OUTPUT}  --builder latex ./
@@ -23,7 +22,7 @@ pdf:
 	cp ${PDF} ./
 
 html:
-	jupyter-book build --path-output ${OUTPUT} ./
+	OMP_NUM_THREADS=1 jupyter-book build --path-output ${OUTPUT} ./
 
 push: html
 	@echo Syncing to zzyang.net
@@ -69,3 +68,5 @@ clean:
 	rm -rf ${HTML_BASE}/
 	rm -rf ${LATEX_BASE}/
 
+clean-all:
+	rm -rf ${OUTPUT}/_build
