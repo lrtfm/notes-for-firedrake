@@ -46,7 +46,7 @@ def create_metric_from_indicator(indicator):
     cv = Function(V, name='cell_volume').interpolate(CellVolume(mesh))
 
     par_loop(('{[i] : 0 <= i < A.dofs}',  'A[i] = B[0]'),
-            dx, {'A' : (tv, INC), 'B' : (cv, READ)}, is_loopy_kernel=True)
+            dx, {'A' : (tv, INC), 'B' : (cv, READ)})
 
     mesh = indicator.ufl_domain()
 
@@ -131,14 +131,40 @@ def test_adapt(dim=2, factor=2):
     return mesh, mesh_adapt
 
 
-def test_adapt_with_option(dim=2, factor=0.5):
+def get_avaiable_adaptors():
+    from firedrake.petsc import get_external_packages
+    eps = get_external_packages()
+    adaptors = ["pragmatic", "mmg", "parmmg"]
+    available_adaptors = []
+    for apt in adaptors:
+        if apt in eps:
+            available_adaptors.append(apt)
+    if len(available_adaptors) == 0:
+        available_adaptors = None
+
+    return available_adaptors
+
+
+def test_adapt_with_option(dim=2, factor=0.5, adaptor=None):
     # adaptors: pragmatic, mmg, parmmg
     #   -dm_adaptor pragmatic
     #   -dm_adaptor mmg       # 2d or 3d (seq)
     #   -dm_adaptor parmmg    # 3d (parallel)
-    #   -dm_adaptor cellrefiner -dm_plex_transform_type refine_sbr
+
+    adaptors = get_avaiable_adaptors()
+    if adaptors is None:
+        PETSc.Sys.Print("No adaptor found. You need to install pragmatic, mmg, or parmmg with petsc.")
+        return None
+
+    if adaptor is not None and adaptor not in adaptors:
+        PETSc.Sys.Print(f"Adaptor {adaptor} not installed with petsc. Installed adaptors: {adaptors}.")
+        return None
+
+    if adaptor is None:
+        adaptor = adaptors[0]
+
     parameters = {
-        "dm_adaptor": "mmg",
+        "dm_adaptor": adaptor,
         # "dm_plex_metric_target_complexity": 400,
         # "dm_view": None,
         # "dm_view_new": None,

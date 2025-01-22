@@ -69,4 +69,4 @@ elif case == 'LinearVariationalSolver':
 else:
     raise Exception(f'Unknow case: {case}')
 
-File('pvd/poisson_example.pvd').write(u_h)
+VTKFile('pvd/poisson_example.pvd').write(u_h)

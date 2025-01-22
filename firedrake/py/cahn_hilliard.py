@@ -64,7 +64,7 @@ x, y = SpatialCoordinate(mesh)
 un.interpolate(u0(x,y))
 
 PETSc.Sys.Print(f'Will save result in {filename}')
-output = File(filename)
+output = VTKFile(filename)
 output.write(un, wn, time=t)
 
 for i in Bar('Timestep').iter(range(M)):
