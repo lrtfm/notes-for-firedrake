@@ -63,7 +63,7 @@ solver = NonlinearVariationalSolver(problem,
 
 u_, p_ = w.subfunctions
 
-output = File('pvd/ns-equation.pvd')
+output = VTKFile('pvd/ns-equation.pvd')
 
 u_nm1.assign(0)
 output.write(u_nm1, p_nm1, time=0)

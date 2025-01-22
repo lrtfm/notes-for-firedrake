@@ -1,0 +1,57 @@
+name: Build the pages
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    name: Build Pages
+    runs-on: ubuntu-latest
+    container:
+      # image: firedrakeproject/firedrake:latest
+      image: firedrakeproject/firedrake-vanilla:latest
+      options: --user root
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y plantuml
+
+      - name: Install Python dependencies
+        run: |
+          . /home/firedrake/firedrake/bin/activate
+          cd $GITHUB_WORKSPACE
+          python3 -m pip install -r requirements.txt
+
+      - name: Build HTML
+        run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          . /home/firedrake/firedrake/bin/activate
+          cd $GITHUB_WORKSPACE
+          jupyter-book build ./
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: _build/html/reports
+
+      - name: publish html
+        uses: burnett01/rsync-deployments@7.0.2
+        with:
+          switches: -avzr --delete
+          path: _build/html/
+          remote_path: ${{ secrets.DEPLOY_PATH }}
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_port: ${{ secrets.DEPLOY_PORT }}
+          remote_user: ${{ secrets.DEPLOY_USER }}
+          remote_key: ${{ secrets.DEPLOY_KEY }}

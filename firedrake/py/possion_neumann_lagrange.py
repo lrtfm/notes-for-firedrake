@@ -28,4 +28,4 @@ u_h, mu_h  = w_h.split()
 
 filename = 'pvd/u_h_neumann.pvd'
 PETSc.Sys.Print(f'Write pvd file: {filename}')
-File(filename).write(u_h)
+VTKFile(filename).write(u_h)

@@ -209,7 +209,6 @@ def plot_adapt_result(result):
         ax.set_xlabel('N')
         ax.set_ylabel('H1 Rel. Err.')
         ax.legend()
-        fig.savefig('figures/adapt_solver.pdf')
 
         return fig
 

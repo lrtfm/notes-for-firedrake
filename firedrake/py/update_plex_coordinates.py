@@ -74,7 +74,7 @@ def test_get_plex_with_update_coordinates():
     def save_mesh(mesh, name):
         V = fd.FunctionSpace(mesh, 'CG', 1)
         f = fd.Function(V, name='f')
-        fd.File(name).write(f)
+        fd.VTKFile(name).write(f)
 
     mesh_init = fd.RectangleMesh(5, 5, 1, 1)
 
