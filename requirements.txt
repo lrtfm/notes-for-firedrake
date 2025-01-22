@@ -7,5 +7,6 @@ sphinx-last-updated-by-git
 matplotlib
 numpy
 nbdime
+siphash24
 ipyparallel
 -e ./extension
