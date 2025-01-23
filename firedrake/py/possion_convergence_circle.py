@@ -4,7 +4,6 @@ import numpy as np
 import json
 
 from intro_utils import get_mesh_size, NumpyEncoder, plot_errors
-from fdutils.tools import errornorm as my_errornorm
 
 
 _default_exact = lambda x: sin(pi*(x[0]**2 + x[1]**2))
