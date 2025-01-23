@@ -32,6 +32,12 @@ jobs:
           cd $GITHUB_WORKSPACE
           python3 -m pip install -r requirements.txt
 
+      - name: cache executed notebooks
+        uses: actions/cache@v4
+        with:
+          path: _build/.jupyter_cache
+          key: jupyter-book-cache-${{ hashFiles('requirements.txt') }}
+
       - name: Build HTML
         run: |
           git config --global --add safe.directory $GITHUB_WORKSPACE
