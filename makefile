@@ -3,7 +3,7 @@
 all: local
 
 NAME=firedrake-notes
-OUTPUT=${HOME}/.aux/firedrake-notes
+OUTPUT=${HOME}/.cache/firedrake-notes
 LATEX_BASE=${OUTPUT}/_build/latex
 HTML_BASE=${OUTPUT}/_build/html
 TEX=${LATEX_BASE}/${NAME}.tex
@@ -23,12 +23,6 @@ pdf:
 
 html:
 	OMP_NUM_THREADS=1 jupyter-book build --path-output ${OUTPUT} ./
-
-push: html
-	@echo Syncing to zzyang.net
-	@rsync -rP --delete ${HTML_BASE}/ zzyang.net:/var/www/html/firedrake-notes/ > ${OUTPUT}/rsync.logs
-	@echo You can look at your book by click the link
-	@echo "\n\thttp://zzyang.net/firedrake-notes/index.html"
 
 local: html
 	@echo Syncing to local directory
