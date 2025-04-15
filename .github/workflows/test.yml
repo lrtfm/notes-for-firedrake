@@ -3,7 +3,7 @@ name: Build the pages
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   build:
@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       # image: firedrakeproject/firedrake:latest
-      image: firedrakeproject/firedrake-vanilla:latest
-      options: --user root
+      image: firedrakeproject/firedrake-vanilla-default
 
     steps:
       - name: Check out the repo
@@ -28,7 +27,6 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          . /home/firedrake/firedrake/bin/activate
           cd $GITHUB_WORKSPACE
           python3 -m pip install -r requirements.txt
 
@@ -41,7 +39,6 @@ jobs:
       - name: Build HTML
         run: |
           git config --global --add safe.directory $GITHUB_WORKSPACE
-          . /home/firedrake/firedrake/bin/activate
           cd $GITHUB_WORKSPACE
           jupyter-book build ./
 
