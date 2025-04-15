@@ -16,14 +16,13 @@ parts:
   - file: firedrake/surface_pde
   - file: firedrake/petsc
   - file: firedrake/dmplex-and-mesh
-  - file: firedrake/kernels
+  # - file: firedrake/kernels # TODO: fix error
   - file: firedrake/debug
   - file: firedrake/profile
 - caption: Installation
   numbered: true
   chapters:
   - file: installation/install
-  - file: installation/install_without_internet_access
   - file: installation/colab
 - caption: Additional Information
   numbered: false
