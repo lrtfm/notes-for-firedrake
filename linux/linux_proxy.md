@@ -16,17 +16,17 @@
 
     This will ensure that most command-line tools (such as `wget`, `curl`, `git`, etc.) use the SOCKS5 proxy by default.
 
-    1. apt proxy 
+1. apt proxy 
 
     Assume the proxy is on localhost at port 5000, using the SOCKS5 protocol.
 
-    2. `-o` option
+    1. `-o` option
 
         ```bash
         sudo apt -o Acquire::http::proxy="socks5h://127.0.0.1:5000" update
         ```
-    3. configuration file `/etc/apt/apt.conf`
-    4. configure file `/etc/apt/apt.conf`
+
+    2. configuration file `/etc/apt/apt.conf`
 
         ```
         Acquire::http::proxy "socks5h://127.0.0.1:5000/";
@@ -34,9 +34,9 @@
         Acquire::https::proxy "socks5h://127.0.0.1:5000/";
         ```
 
-2. curl proxy
+1. curl proxy
 
-   use configuration file `~/.curlrc` or the command line option `-x`
+   Use the configuration file `~/.curlrc` or the command line option `-x`
 
     ```bash
     curl -x socks5h://localhost:5000 -L -O <url>
