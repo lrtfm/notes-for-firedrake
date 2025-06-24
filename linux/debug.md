@@ -1,12 +1,20 @@
 # Debug with tmux and tmux-mpi
 
-1. install gdb tmux
+1. Install tmux
 
+    On Ubuntu:
     ```bash
-    sudo apt update && sudo apt -y install gdb tmux
+    sudo apt update && sudo apt -y install tmux
     ```
 
-2. install tmux-mpi
+    On macOS:
+    ```bash
+    brew install tmux
+    ```
+
+2. Install tmux-mpi
+
+    First, install `dtach`:
 
     ```bash
     git clone https://github.com/crigler/dtach
@@ -15,15 +23,28 @@
     make
     mkdir -p $HOME/bin
     cp dtach $HOME/bin
-    export PATH=$PATH:$HOME/bin
+    export PATH="$HOME/bin:$PATH"
+    ```
+
+    Then, install `tmux-mpi`:
+
+    ```bash
     pip install --upgrade --no-cache-dir git+https://github.com/wrs20/tmux-mpi@master
     ```
 
-3. debug with tmux-mpi
+3. Debug with tmux-mpi
+
+    You can use `gdb` as the debugger on Linux and Intel-based macOS systems. On macOS with Apple Silicon (arm64), use `lldb` instead of `gdb`.
+
+    For configuration details and advanced usage, refer to the [tmux-mpi documentation](https://github.com/wrs20/tmux-mpi?tab=readme-ov-file#configuration).
+
+    Example usage with 16 processes:
 
     ```bash
-    tmux-mpi 16 gdb -ex run --args $(which python) $HOME/hsolver/hsolver.py -config /work/tests/model02/car_cabin_exact.yml -meshfile meshes/mesh1.msh -degree 2 -cip_enable true -freqs 1000:2000:500
+    tmux-mpi 16 gdb -ex run --args $(which python) test_example.py
     ```
+
+    Replace `test_example.py` with your script as needed.
 
 
     ```console
