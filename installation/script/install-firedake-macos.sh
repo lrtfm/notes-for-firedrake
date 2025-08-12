@@ -74,14 +74,7 @@ function install_firedrake() {
     python3 -m venv --copies $ENV_NAME
     source $ENV_NAME/bin/activate
     mkdir -p $ENV_NAME/src
-    pushd $ENV_NAME/src
-    if [[ ! -d "./firedrake" ]]; then
-        git clone https://github.com/firedrakeproject/firedrake.git
-    else
-        pushd ./firedrake
-        git pull
-        popd
-    fi
+
     echo ENV: CC=mpicc CXX=mpicxx
     echo ENV: PETSC_DIR=$PETSC_DIR
     echo ENV: PETSC_ARCH=$PETSC_ARCH
@@ -90,7 +83,8 @@ function install_firedrake() {
     CC=mpicc CXX=mpicxx \
         PETSC_DIR=$PETSC_DIR PETSC_ARCH=$PETSC_ARCH SLEPC_DIR=$SLEPC_DIR \
         HDF5_MPI=ON HDF5_DIR=/opt/homebrew \
-        pip install -vvvv --no-binary h5py --editable './firedrake[check,vtk,netgen,slepc]'
+        pip install -v --no-binary h5py --src $ENV_NAME/src \
+            --editable "git+https://github.com/firedrakeproject/firedrake.git@release#egg=firedrake[check,vtk,netgen,slepc]"
         # pip install --no-binary h5py "firedrake @ git+https://github.com/firedrakeproject/firedrake.git#[check,vtk,netgen,slepc]"
         
     # # Install slepc4py
@@ -102,7 +96,6 @@ function install_firedrake() {
     # # Install pkgs with option editable
     # git clone <fiat url>
     # pip install --editable ./fiat
-    popd
 }
 
 curl -O https://raw.githubusercontent.com/firedrakeproject/firedrake/master/scripts/firedrake-configure
