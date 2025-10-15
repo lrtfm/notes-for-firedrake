@@ -1,9 +1,13 @@
 from firedrake import *
-from firedrake.petsc import PETSc, OptionsManager
+from firedrake.petsc import PETSc
 from firedrake.cython.dmcommon import to_petsc_local_numbering
 import numpy as np
 import matplotlib.pylab as plt
 
+try:
+    from petsctools.options import OptionsManager
+except ImportError:
+    from firedrake.petsc import OptionsManager
 
 def to_petsc_local_numbering_for_local_vec(vec, V):
     section = V.dm.getLocalSection()
