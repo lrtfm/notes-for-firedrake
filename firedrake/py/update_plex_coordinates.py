@@ -16,7 +16,8 @@ def get_plex_with_update_coordinates(mesh: MeshGeometry):
     """
     Update the coordinates of the plex in mesh, and then return a clone without pyop2 label
     """
-    mesh.topology.init()
+    if hasattr(mesh.topology, 'init'):
+        mesh.topology.init()
     dm = mesh.topology_dm.clone()
     csec = dm.getCoordinateSection()
     coords_vec = dm.getCoordinatesLocal()
