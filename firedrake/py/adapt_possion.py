@@ -1,11 +1,15 @@
 from firedrake import *
-from firedrake.petsc import PETSc, flatten_parameters
+from firedrake.petsc import PETSc
 from pyop2.datatypes import IntType, RealType, ScalarType, \
                             as_cstr, as_ctypes, as_numpy_dtype
 
 import numpy as np
 import matplotlib.pyplot as plt
 
+try:
+    from petsctools.options import OptionsManager
+except ImportError:
+    from firedrake.petsc import OptionsManager
 
 def solve_possion(mesh, u_handle, f_handle):
     x = SpatialCoordinate(mesh)
@@ -154,8 +158,7 @@ def remove_pyop2_label(plex: PETSc.DMPlex):
 
 
 def adapt_possion_Lshape():
-    opts = PETSc.Options()
-    opts.insertString('-dm_plex_transform_type refine_sbr')
+    om = OptionsManager({"dm_plex_transform_type": "refine_sbr"}, options_prefix='')
 
     def u_exact(x):
         mesh = x.ufl_domain()
@@ -182,7 +185,8 @@ def adapt_possion_Lshape():
             plex = mark_cells(mesh, eta_K, theta=0.2)
 
             with PETSc.Log.Event("ADAPT"):
-                new_plex = plex.adaptLabel('adapt')
+                with om.inserted_options():
+                    new_plex = plex.adaptLabel('adapt')
                 # Remove labels to avoid errors
                 new_plex.removeLabel('adapt')
                 remove_pyop2_label(new_plex)
