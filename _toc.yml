@@ -19,6 +19,7 @@ parts:
   # - file: firedrake/kernels # TODO: fix error
   - file: firedrake/debug
   - file: firedrake/profile
+  - file: firedrake/kernels
 - caption: Installation
   numbered: true
   chapters:
