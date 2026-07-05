@@ -157,7 +157,7 @@ parse:
     # don't forget to list any other extensions you want enabled,
     # including those that are enabled by default!
     - amsmath
-    # - attrs_inline  # this is not supported by myst-parser 0.18.1
+    - attrs_inline  # requires myst-parser >= 2 (used for bilingual headings)
     # - attrs_block
     - colon_fence
     - deflist

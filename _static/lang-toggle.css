@@ -1,0 +1,26 @@
+/* Bilingual content switching (see lang-toggle.js). */
+html[data-content-lang="zh"] .lang-en {
+  display: none !important;
+}
+html[data-content-lang="en"] .lang-zh {
+  display: none !important;
+}
+
+button.lang-toggle-btn {
+  font-weight: 600;
+  min-width: 2.5rem;
+}
+
+/* Fallback position when the theme header is not found. */
+button.lang-toggle-floating {
+  position: fixed;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1050;
+  background: var(--pst-color-background, #fff);
+  color: var(--pst-color-text-base, #333);
+  border: 1px solid var(--pst-color-border, #ccc);
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+}
