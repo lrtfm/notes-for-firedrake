@@ -138,3 +138,6 @@ _build/
 *.logs
 *.pdf
 .vscode/
+
+# macOS
+.DS_Store

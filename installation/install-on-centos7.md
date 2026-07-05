@@ -118,13 +118,14 @@ To enable Kokkos support, add the following options to your PETSc `configure` co
     ln -s libcuda.so "$CUDA_DIR/lib64/stubs/libcuda.so.1"
     ```
 
+(ssh-proxy)=
 ## SSH proxy
 
 This section describes how to set up an SSH SOCKS5 proxy on port 5000 and ensure it is automatically stopped when your session ends.
 
 First, configure passwordless SSH access to your proxy server by adding the following to your `~/.ssh/config`:
 
-```ssh
+```text
 Host proxy-server
     HostName your.proxy.server.address
     User your-username

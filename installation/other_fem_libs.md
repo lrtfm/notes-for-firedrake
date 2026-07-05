@@ -1,4 +1,4 @@
-# Other FEM library/softwares
+# Other FEM Libraries and Software
 
 + [FEniCSx](https://fenicsproject.org/)
 
