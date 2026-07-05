@@ -1,4 +1,4 @@
-# 术语对照表 (Glossary)
+# [术语对照表]{.lang-zh} [Glossary]{.lang-en}
 
 本表给出笔记中常用术语的中英文对照, 以及 Firedrake/UFL 中对应的对象或函数,
 方便对照阅读英文文档.
