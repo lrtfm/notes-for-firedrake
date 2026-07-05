@@ -13,6 +13,12 @@ only_build_toc_files: true
 # See https://jupyterbook.org/content/execute.html
 execute:
   execute_notebooks: 'cache' # force, cache
+  timeout: 300  # seconds per cell; some notebooks have heavy cells
+  # These notebooks need extra tools (e.g. gmsh, fdutils) that may not be
+  # available in the build environment, so they are not executed during the build.
+  exclude_patterns:
+    - 'firedrake/gmsh.ipynb'
+    - 'python/python2.ipynb'
 
 # Define the name of the latex output file for PDF builds
 latex:
@@ -48,7 +54,7 @@ html:
   extra_footer: |
     <div>
     <!-- By <a href="https://zzyang.net/">YANG Zongze</a>  -->
-    &copy; Copyright 2025.
+    &copy; Copyright 2021&ndash;2026.
     </div>
 
   comments:
