@@ -50,6 +50,17 @@ English content.
 # [中文标题]{.lang-zh} [English Title]{.lang-en}
 ```
 
+对于公式多, 文字少的短句 (一两句话以内), 不必使用成对围栏,
+直接用行内语法标记少量文字, 公式只写一遍:
+
+```markdown
+[其中]{.lang-zh}[where]{.lang-en} $a > 0$ [且]{.lang-zh}[and]{.lang-en} $b > 0$.
+```
+
+注意把空格放在 span 外面, 不要依赖 span 内部的首尾空格.
+编号公式 (`\begin{equation}`) 任何时候都不要复制两份, 否则编号会错乱;
+将其放在语言块之外共享.
+
 侧边栏的部分标题 (part caption) 来自 `_toc.yml`, 是纯文本,
 无法使用上述语法, 由 `lang-toggle.js` 中的 `CAPTIONS` 映射表翻译;
 新增或修改 part 时需要同步更新该映射表.
@@ -62,7 +73,9 @@ English overview of this chapter.
 ```
 ````
 
-注意: LaTeX/PDF 构建不执行 JavaScript, 两种语言的内容都会出现在 PDF 中.
+注意: LaTeX/PDF 构建不执行 JavaScript. 本地扩展
+[`_ext/lang_filter.py`](../_ext/lang_filter.py) 会在 LaTeX 构建时删除所有
+`lang-en` 节点, 因此 PDF 只包含中文内容.
 
 ## Pygments
 

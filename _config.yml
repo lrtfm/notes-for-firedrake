@@ -63,6 +63,9 @@ html:
   announcement              : "" # A banner announcement at the top of the site.
 
 sphinx:
+  local_extensions:
+    # Keep the PDF Chinese-only: drop lang-en nodes in the latex build
+    lang_filter: ./_ext
   extra_extensions:
     # - sphinxcontrib.mermaid
     # - sphinxcontrib.wavedrom
