@@ -4,34 +4,46 @@
 format: jb-book
 root: README
 parts:
-- caption: Firedrake
+- caption: Firedrake 入门 (Tutorials)
   numbered: true
   chapters:
   - file: firedrake/poisson_I
   - file: firedrake/poisson_II
   - file: firedrake/parabolic
-  - file: firedrake/parallel
   - file: firedrake/ns
   - file: firedrake/cahn_hilliard
   - file: firedrake/surface_pde
+- caption: 进阶专题 (Advanced Topics)
+  numbered: true
+  chapters:
+  - file: firedrake/parallel
   - file: firedrake/petsc
-  - file: firedrake/dmplex-and-mesh
-  # - file: firedrake/kernels # TODO: fix error
+  - file: firedrake/gmsh
   - file: firedrake/debug
   - file: firedrake/profile
+- caption: 内部机制 (Internals)
+  numbered: true
+  chapters:
+  - file: firedrake/dmplex-and-mesh
   - file: firedrake/kernels
 - caption: Installation
   numbered: true
   chapters:
   - file: installation/install
+  - file: installation/install-on-centos7
   - file: installation/colab
 - caption: Additional Information
   numbered: false
   chapters:
   - file: installation/ask_for_help
   - file: installation/other_fem_libs
+  - file: reference/glossary
+  - file: python/python1
+  - file: python/python2
   - file: linux/a_quick_start
+  - file: linux/git
   - file: linux/debug
   - file: python/jupyter_book.md
   - file: linux/linux_proxy
   - file: editor/vscode
+  - file: linux/editor

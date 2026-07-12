@@ -13,6 +13,12 @@ only_build_toc_files: true
 # See https://jupyterbook.org/content/execute.html
 execute:
   execute_notebooks: 'cache' # force, cache
+  timeout: 300  # seconds per cell; some notebooks have heavy cells
+  # These notebooks need extra tools (e.g. gmsh, fdutils) that may not be
+  # available in the build environment, so they are not executed during the build.
+  exclude_patterns:
+    - 'firedrake/gmsh.ipynb'
+    - 'python/python2.ipynb'
 
 # Define the name of the latex output file for PDF builds
 latex:
@@ -48,7 +54,7 @@ html:
   extra_footer: |
     <div>
     <!-- By <a href="https://zzyang.net/">YANG Zongze</a>  -->
-    &copy; Copyright 2025.
+    &copy; Copyright 2021&ndash;2026.
     </div>
 
   comments:
@@ -57,6 +63,9 @@ html:
   announcement              : "" # A banner announcement at the top of the site.
 
 sphinx:
+  local_extensions:
+    # Keep the PDF Chinese-only: drop lang-en nodes in the latex build
+    lang_filter: ./_ext
   extra_extensions:
     # - sphinxcontrib.mermaid
     # - sphinxcontrib.wavedrom
@@ -151,7 +160,7 @@ parse:
     # don't forget to list any other extensions you want enabled,
     # including those that are enabled by default!
     - amsmath
-    # - attrs_inline  # this is not supported by myst-parser 0.18.1
+    - attrs_inline  # requires myst-parser >= 2 (used for bilingual headings)
     # - attrs_block
     - colon_fence
     - deflist

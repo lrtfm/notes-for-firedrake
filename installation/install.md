@@ -1,4 +1,4 @@
-# Installation of Firedake
+# Installation of Firedrake
 
 
 <!--
@@ -39,7 +39,7 @@ python3 download_petsc_pkgs.py -d <path/to/petsc/packages> pkgs_info.txt
 ```
 
 
-### Using firedrake in Jupyter-lab (which installed not in firedrake env)
+### Using Firedrake in JupyterLab (installed outside the Firedrake env)
 
 1. Install `jupyterlab`
 
@@ -47,7 +47,7 @@ python3 download_petsc_pkgs.py -d <path/to/petsc/packages> pkgs_info.txt
     python3 -m pip install jupyterlab
     ```
 
-    Maybe you need add `$HOME/.local/bin` to environment variable `PATH`:
+    You may need to add `$HOME/.local/bin` to the environment variable `PATH`:
 
     ```bash
     export PATH=$PATH:$HOME/.local/bin
@@ -97,22 +97,22 @@ python3 download_petsc_pkgs.py -d <path/to/petsc/packages> pkgs_info.txt
         (your-venv)$ ipython kernel install --name "local-venv" --user
         ```
 
-        The output should looks like:
+        The output should look like:
         ```console
         Installed kernelspec local-venv in /path/to/kernels/local-venv
         ```
-        where the path `/path/to/kernels/local-venv` should have different name in your enviornment.
+        where the path `/path/to/kernels/local-venv` will have a different name in your environment.
 
-        Also, we can find the kernelspec path by run `jupyter kernelspec list`, which will output all avaialbe kernels with its path.
+        Also, we can find the kernelspec path by running `jupyter kernelspec list`, which will output all available kernels with their paths.
 
-        Now we need check the python path in `kernel.json`, which is located in the above path.
+        Now we need to check the python path in `kernel.json`, which is located in the above path.
         Make sure it is the python in your env. Otherwise, correct it.
 
     3. Add environment variables to `kernel.json`:[^kernels]
 
        [^kernels]: For more about jupyter kernels: https://jupyter-client.readthedocs.io/en/stable/kernels.html
 
-       An exmaple of `kernel.json`:
+       An example of `kernel.json`:
 
         ```json
         {
