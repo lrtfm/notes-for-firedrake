@@ -1,9 +1,17 @@
-.PHONY : all html pdf clean
+.PHONY : all html pdf clean docker-pull docker-html docker-clean
 
 all: local
 
 NAME=firedrake-notes
 OUTPUT=${HOME}/.cache/firedrake-notes
+
+# Same image as .github/workflows/test.yml, for pre-push verification builds
+DOCKER_IMAGE=firedrakeproject/firedrake-vanilla-default
+DOCKER_CACHE=${HOME}/.cache/firedrake-notes-docker
+# Optional proxy for pip inside the container. The host's 127.0.0.1 is not
+# reachable from a container; use host.docker.internal instead, e.g.:
+#   make docker-html DOCKER_PROXY=http://host.docker.internal:<port>
+DOCKER_PROXY=
 LATEX_BASE=${OUTPUT}/_build/latex
 HTML_BASE=${OUTPUT}/_build/html
 TEX=${LATEX_BASE}/${NAME}.tex
@@ -56,6 +64,33 @@ execute: $(NOTEBOOKS:%.ipynb=$(PUBLISH_DIR)/%.ipynb)
 
 clearoutput: $(CHANGED_NOTEBOOKS:=.clear)
 	@echo "All notebook outputs and metadata have been cleared."
+
+# Verify the build inside the same Docker image the CI uses.
+# Usage:
+#   make docker-pull   # update the image (CI always uses the latest)
+#   make docker-html   # build the book in the container
+# The jupyter cache persists in ${DOCKER_CACHE}, so only the first run
+# executes every notebook.
+docker-pull:
+	docker pull ${DOCKER_IMAGE}
+
+docker-html:
+	@mkdir -p ${DOCKER_CACHE}
+	docker run --rm -t --user 0:0 \
+		-v "${CURDIR}":/notes -w /notes \
+		-v ${DOCKER_CACHE}:/cache \
+		-e OMP_NUM_THREADS=1 \
+		-e PIP_CACHE_DIR=/cache/pip \
+		-e HTTP_PROXY=${DOCKER_PROXY} -e HTTPS_PROXY=${DOCKER_PROXY} \
+		-e http_proxy=${DOCKER_PROXY} -e https_proxy=${DOCKER_PROXY} \
+		${DOCKER_IMAGE} bash -c '\
+		apt-get update -qq && apt-get install -y -qq plantuml >/dev/null 2>&1; \
+		python3 -m pip install -q -r requirements.txt && \
+		jupyter-book build --path-output /cache ./'
+	@echo "HTML written to ${DOCKER_CACHE}/_build/html"
+
+docker-clean:
+	rm -rf ${DOCKER_CACHE}/_build
 
 clean:
 	jupyter-book clean ./

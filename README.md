@@ -97,5 +97,18 @@ python3 -m pip install -r requirements.txt
 jupyter-book build ./
 ```
 
+:::lang-zh
+CI 使用最新的 `firedrakeproject/firedrake-vanilla-default` 镜像构建.
+推送前可运行 `make docker-html`, 在与 CI 相同的镜像中做一次验证构建
+(先用 `make docker-pull` 更新镜像), 以提前发现 Firedrake 新版本的接口变化.
+:::
+
+:::lang-en
+The CI builds with the latest `firedrakeproject/firedrake-vanilla-default`
+image. Before pushing, you can run `make docker-html` to verify the build
+inside the same image (update it first with `make docker-pull`), catching
+API changes of new Firedrake releases early.
+:::
+
 ```{nb-exec-table}
 ```

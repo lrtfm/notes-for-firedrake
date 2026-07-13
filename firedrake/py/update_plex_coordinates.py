@@ -27,7 +27,7 @@ def get_plex_with_update_coordinates(mesh: MeshGeometry):
 
     data = mesh.coordinates.dat.data_ro_with_halos
     dest = np.zeros_like(data)
-    n = mesh.geometric_dimension()
+    n = mesh.geometric_dimension
     m = csec.getFieldComponents(0)
     assert m == n
     for i in range(s, e):
@@ -49,8 +49,8 @@ def get_plex_with_update_coordinates(mesh: MeshGeometry):
 # we can update the coordinates using section
 # # Ref: https://github.com/firedrakeproject/firedrake/pull/2796/files
 def get_plex_with_update_coordinates_new(mesh: MeshGeometry):
-    tdim = mesh.topological_dimension()
-    gdim = mesh.geometric_dimension()
+    tdim = mesh.topological_dimension
+    gdim = mesh.geometric_dimension
     entity_dofs = np.zeros(tdim + 1, dtype=np.int32)
     entity_dofs[0] = gdim 
     coord_section = mesh.create_section(entity_dofs)
