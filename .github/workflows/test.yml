@@ -64,7 +64,9 @@ jobs:
         run: |
           git config --global --add safe.directory $GITHUB_WORKSPACE
           cd $GITHUB_WORKSPACE
-          jupyter-book build ./
+          # -W turns warnings (including notebook execution failures, which
+          # jupyter-book otherwise only warns about) into a failed build
+          jupyter-book build -W --keep-going ./
 
       - name: Upload reports
         if: always()
