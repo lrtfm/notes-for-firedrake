@@ -17,7 +17,7 @@ u_D = as_vector((1, 0))
 f = as_vector([0, 0])
 
 cell = mesh.ufl_cell()
-tdim = cell.topological_dimension()
+tdim = cell.topological_dimension
 
 # Mini element: P1 X P1b
 P1 = FiniteElement("CG", cell, 1)

@@ -1,6 +1,5 @@
 from firedrake import *
 from firedrake.petsc import PETSc
-from firedrake.cython.dmcommon import to_petsc_local_numbering
 import numpy as np
 import matplotlib.pylab as plt
 
@@ -66,7 +65,7 @@ def create_metric_from_indicator(indicator):
     Vc = mesh.coordinates.function_space()
     ind = indicator.dat.data_with_halos
 
-    dim = mesh.geometric_dimension()
+    dim = mesh.geometric_dimension
 
     if dim == 2:
         edge2vec = lambda e: [ e[0]**2, 2*e[0]*e[1], e[1]**2 ]
@@ -136,7 +135,10 @@ def test_adapt(dim=2, factor=2):
 
 
 def get_avaiable_adaptors():
-    from firedrake.petsc import get_external_packages
+    try:
+        from petsctools import get_external_packages
+    except ImportError:
+        from firedrake.petsc import get_external_packages
     eps = get_external_packages()
     adaptors = ["pragmatic", "mmg", "parmmg"]
     available_adaptors = []
