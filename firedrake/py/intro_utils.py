@@ -6,14 +6,41 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import numpy as np
 import json
+import logging
+import re
 
-__all__ = ('plot_mesh_with_label', 'get_mesh_size', 'printf', 'sync_printf', 'NumpyEncoder', 'plot_errors')
+__all__ = ('triplot', 'plot_mesh_with_label', 'get_mesh_size', 'printf', 'sync_printf', 'NumpyEncoder', 'plot_errors')
+
+
+_EMPTY_SUBDOMAIN_WARNING = re.compile(
+    r"Subdomain \(\d+(?:,\s*\d+)*,?\) is empty\. "
+    r"This is likely an error\. Did you choose the right label\?"
+)
+
+
+class _EmptySubdomainWarningFilter(logging.Filter):
+    def filter(self, record):
+        return _EMPTY_SUBDOMAIN_WARNING.fullmatch(record.getMessage()) is None
+
+
+def triplot(*args, **kwargs):
+    """Call Firedrake's triplot without its empty-facet probe warnings."""
+    logger = logging.getLogger('firedrake')
+    log_filter = _EmptySubdomainWarningFilter()
+    handlers = tuple(logger.handlers)
+    for handler in handlers:
+        handler.addFilter(log_filter)
+    try:
+        return fdplt.triplot(*args, **kwargs)
+    finally:
+        for handler in handlers:
+            handler.removeFilter(log_filter)
 
 
 def plot_mesh_with_label(mesh, axes=None):
     if axes is None:
         fig, axes = plt.subplots(figsize=[4, 4])
-    fdplt.triplot(mesh, axes=axes, boundary_kw={'lw': 3})
+    triplot(mesh, axes=axes, boundary_kw={'lw': 3})
     axes.set_aspect(aspect='equal')
     # ax.set_axis_off()
     axes.legend(loc='upper left', bbox_to_anchor=(1, 1))
