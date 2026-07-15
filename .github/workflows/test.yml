@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - main
+  pull_request:
+  # Weekly canary build: runs without the notebook cache, so every notebook
+  # is re-executed against the latest Firedrake image. A failure here warns
+  # about upstream API changes before they block real work.
+  schedule:
+    - cron: '0 3 * * 1'
+
+# Cancel superseded runs of the same PR/branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -30,25 +41,43 @@ jobs:
           cd $GITHUB_WORKSPACE
           python3 -m pip install -r requirements.txt
 
+      - name: Get Firedrake version
+        id: firedrake
+        run: |
+          echo "version=$(python3 -c 'from importlib.metadata import version; print(version("firedrake"))')" >> "$GITHUB_OUTPUT"
+
+      # The jupyter cache only re-executes notebooks whose code changed, so
+      # the Firedrake version must be part of the key: when the image is
+      # updated, the whole book is re-executed instead of silently reusing
+      # outputs produced by an older Firedrake.
+      # Skipped for scheduled runs so the weekly canary is a full rebuild.
       - name: cache executed notebooks
+        if: github.event_name != 'schedule'
         uses: actions/cache@v4
         with:
           path: _build/.jupyter_cache
-          key: jupyter-book-cache-${{ hashFiles('requirements.txt') }}
+          key: jupyter-book-cache-fd${{ steps.firedrake.outputs.version }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            jupyter-book-cache-fd${{ steps.firedrake.outputs.version }}-
 
       - name: Build HTML
         run: |
           git config --global --add safe.directory $GITHUB_WORKSPACE
           cd $GITHUB_WORKSPACE
-          jupyter-book build ./
+          # -W turns warnings (including notebook execution failures, which
+          # jupyter-book otherwise only warns about) into a failed build
+          jupyter-book build -W --keep-going ./
 
       - name: Upload reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: reports
           path: _build/html/reports
+          if-no-files-found: ignore
 
       - name: publish html
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: burnett01/rsync-deployments@7.0.2
         with:
           switches: -avzr --delete
