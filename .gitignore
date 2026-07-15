@@ -139,5 +139,9 @@ _build/
 *.pdf
 .vscode/
 
+# Local AI agent configuration
+AGENTS.md
+.claude/
+
 # macOS
 .DS_Store
