@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
@@ -53,7 +53,7 @@ jobs:
       # Skipped for scheduled runs so the weekly canary is a full rebuild.
       - name: cache executed notebooks
         if: github.event_name != 'schedule'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: _build/.jupyter_cache
           key: jupyter-book-cache-fd${{ steps.firedrake.outputs.version }}-${{ hashFiles('requirements.txt') }}
@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reports
           path: _build/html/reports
@@ -78,7 +78,7 @@ jobs:
 
       - name: publish html
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: burnett01/rsync-deployments@7.0.2
+        uses: burnett01/rsync-deployments@v8
         with:
           switches: -avzr --delete
           path: _build/html/
