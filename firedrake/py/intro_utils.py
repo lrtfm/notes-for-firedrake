@@ -86,7 +86,7 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def plot_errors(hs, errors, expect_order=2, filename=None):
+def plot_errors(hs, errors, expect_order=2, filename=None, axes=None):
 
     hs = np.array(hs)
     errors = np.array(errors)
@@ -98,7 +98,10 @@ def plot_errors(hs, errors, expect_order=2, filename=None):
     #           'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 
     #           'tab:olive', 'tab:cyan')
 
-    fig, ax = plt.subplots(figsize=[5, 4])
+    if axes is None:
+        fig, ax = plt.subplots(figsize=[5, 4])
+    else:
+        ax = axes
     ax.loglog(hs, errors, marker='v', ls='-', color='tab:blue', label=f'$L^2$')
 
     # plot reference line
