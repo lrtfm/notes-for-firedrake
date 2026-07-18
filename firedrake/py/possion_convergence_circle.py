@@ -148,11 +148,13 @@ if __name__ == '__main__':
                                            exact_handle=exact_handle,
                                            iso=iso, only_move_bdy=only_move_bdy)
 
+                fmt_err = lambda arr: ' '.join(f'{x:.2e}' for x in arr)
+                fmt_ord = lambda arr: ' '.join(['      --'] + [f'{x:8.2f}' for x in arr])
                 PETSc.Sys.Print(f'p = {degree}; Use isoparametric: {iso}; Only move boundary: {only_move_bdy}.')
-                PETSc.Sys.Print(f'    Rel. H1 errors: {data["errors_H1"]}')
-                PETSc.Sys.Print(f'            orders: {data["orders_H1"]}')
-                PETSc.Sys.Print(f'    Rel. L2 errors: {data["errors_L2"]}')
-                PETSc.Sys.Print(f'            orders: {data["orders_L2"]}\n')
+                PETSc.Sys.Print(f'    Rel. H1 errors: {fmt_err(data["errors_H1"])}')
+                PETSc.Sys.Print(f'            orders: {fmt_ord(data["orders_H1"])}')
+                PETSc.Sys.Print(f'    Rel. L2 errors: {fmt_err(data["errors_L2"])}')
+                PETSc.Sys.Print(f'            orders: {fmt_ord(data["orders_L2"])}\n')
                 # PETSc.Sys.Print('data = ', json.dumps(data, indent=2, cls=NumpyEncoder))
 
                 if COMM_WORLD.rank == 0:
