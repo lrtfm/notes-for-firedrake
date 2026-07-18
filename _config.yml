@@ -75,6 +75,8 @@ sphinx:
     # - sphinxcontrib.blockdiag
   config:
     html_show_copyright: false
+    # Merge consecutive stdout/stderr chunks into one output block
+    nb_merge_streams: true
     language: en
     # https://www.sphinx-doc.org/en/master/latex.html
     # latex_show_urls: footnote  # inline
