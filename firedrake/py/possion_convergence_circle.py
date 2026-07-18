@@ -148,7 +148,7 @@ if __name__ == '__main__':
                                            exact_handle=exact_handle,
                                            iso=iso, only_move_bdy=only_move_bdy)
 
-                PETSc.Sys.Print(f'p = {degree}; Use iso: {iso}; Only move bdy: {only_move_bdy}.')
+                PETSc.Sys.Print(f'p = {degree}; Use isoparametric: {iso}; Only move boundary: {only_move_bdy}.')
                 PETSc.Sys.Print(f'    Rel. H1 errors: {data["errors_H1"]}')
                 PETSc.Sys.Print(f'            orders: {data["orders_H1"]}')
                 PETSc.Sys.Print(f'    Rel. L2 errors: {data["errors_L2"]}')
