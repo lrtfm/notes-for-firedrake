@@ -205,7 +205,7 @@ def adapt_possion_Lshape():
 def plot_adapt_result(result):
     data = np.array(result)
     if COMM_WORLD.rank == 0:
-        fig, ax = plt.subplots(figsize=[6, 4])
+        fig, ax = plt.subplots(figsize=[5, 3.5])
         # plt.rcParams.update({'font.size': 12})
         ax.loglog(data[:, 0], data[:, 1], '*-', label=r'$||u_h - u||_1/||u||_1$')
 
