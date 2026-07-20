@@ -10,8 +10,8 @@ parts:
   - file: firedrake/poisson_I
   - file: firedrake/poisson_II
   - file: firedrake/parabolic
-  - file: firedrake/ns
   - file: firedrake/cahn_hilliard
+  - file: firedrake/ns
   - file: firedrake/surface_pde
 - caption: 进阶专题 (Advanced Topics)
   numbered: true
