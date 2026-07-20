@@ -29,8 +29,10 @@ pdf:
 	cd ${LATEX_BASE} && latexmk -xelatex ${NAME}.tex
 	cp ${PDF} ./
 
+# -W --keep-going matches CI: warnings (including notebook execution
+# failures) fail the build, but all warnings are still reported.
 html:
-	OMP_NUM_THREADS=1 jupyter-book build --path-output ${OUTPUT} ./
+	OMP_NUM_THREADS=1 jupyter-book build -W --keep-going --path-output ${OUTPUT} ./
 
 local: html
 	@echo Syncing to local directory
@@ -86,7 +88,7 @@ docker-html:
 		${DOCKER_IMAGE} bash -c '\
 		apt-get update -qq && apt-get install -y -qq plantuml >/dev/null 2>&1; \
 		python3 -m pip install -q -r requirements.txt && \
-		jupyter-book build --path-output /cache ./'
+		jupyter-book build -W --keep-going --path-output /cache ./'
 	@echo "HTML written to ${DOCKER_CACHE}/_build/html"
 
 docker-clean:

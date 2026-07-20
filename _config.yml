@@ -74,6 +74,15 @@ sphinx:
     - sphinx_last_updated_by_git
     # - sphinxcontrib.blockdiag
   config:
+    # Keep sphinx's defaults and additionally ignore local agent files
+    # (.claude/ is gitignored and absent in CI); without this, its markdown
+    # files trigger a "not in any toctree" warning that fails -W builds.
+    exclude_patterns:
+      - _build
+      - Thumbs.db
+      - .DS_Store
+      - '**.ipynb_checkpoints'
+      - .claude/**
     html_show_copyright: false
     # Merge consecutive stdout/stderr chunks into one output block
     nb_merge_streams: true
