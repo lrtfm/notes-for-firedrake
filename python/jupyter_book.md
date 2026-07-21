@@ -111,3 +111,10 @@ $ tree -L 2 --filesfirst --charset=ascii ../extension
 :::{literalinclude} ../extension/xyzutils/colab_python.py
 :caption:
 :::
+
+## nbconvert
+
+本书 Makefile 中的 `execute`/`clearoutput` 等 target 依赖 `nbconvert` 执行和清理 notebook.
+如需自定义导出模板, 参考官方文档:
+
+https://nbconvert.readthedocs.io/en/latest/customizing.html

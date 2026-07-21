@@ -77,6 +77,38 @@ Follow the official [Firedrake installation instructions](https://www.firedrakep
 
 See [install-firedrake-centos7.sh](script/install-firedake-centos7.sh) for an example.
 
+### Wrapper script for launching Python
+
+Create a file with the following content and save it in the `bin` directory of the Firedrake environment, so it can be used to start Python in the corresponding environment:
+
+```bash
+#!/usr/bin/env bash
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+FIRDRAKE_BASENAME=$( basename $( dirname $SCRIPT_DIR ) )  # firedrake-comple
+MY_SPACK_DIR=$( dirname $( dirname $SCRIPT_DIR ) )           # /.../firedrake-env
+MY_SPACK_LOG=$(spack env status)
+
+if [ "`basename \"$VIRTUAL_ENV\"`" != "$FIRDRAKE_BASENAME" ]; then
+        if [ "$VIRTURE_ENV" != "" ]; then
+                deactivate
+        fi
+        if `echo "$MY_SPACK_LOG" | grep -v "$MY_SPACK_DIR" > /dev/null 2>&1`; then
+                if `echo "$MY_SPACK_LOG" | grep -v "No" > /dev/null 2>&1`; then
+                        spack env deactivate
+                fi
+                spack env activate $MY_SPACK_DIR -p
+                unset PYTHON_PATH
+        fi
+        . $SCRIPT_DIR/activate
+fi
+
+export MPIR_CVAR_ENABLE_GPU=0
+export OMP_NUM_THREADS=1
+# pass all the parameters to python
+$SCRIPT_DIR/python $@
+```
+
 ### Configure PETSc
 
 When building PETSc, you need to specify the locations of dependencies so PETSc can find them. Set the environment variable `$DEPS_VIEW` to your Spack view directory (e.g., `$HOME/opt/tools-view`). Add the following options to your PETSc `configure` command:

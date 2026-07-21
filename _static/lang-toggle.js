@@ -33,7 +33,6 @@
   var CAPTIONS = {
     "Firedrake 入门 (Tutorials)": { zh: "Firedrake 入门", en: "Tutorials" },
     "进阶专题 (Advanced Topics)": { zh: "进阶专题", en: "Advanced Topics" },
-    "内部机制 (Internals)": { zh: "内部机制", en: "Internals" },
     "Installation": { zh: "安装", en: "Installation" },
     "Additional Information": { zh: "附加信息", en: "Additional Information" }
   };

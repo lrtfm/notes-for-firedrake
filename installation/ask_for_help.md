@@ -50,3 +50,17 @@ __Mail List__:
 
 1. https://spackpm.slack.com/
 2. https://groups.google.com/g/spack
+
+## Other FEM Libraries and Software
+
++ [FEniCSx](https://fenicsproject.org/)
+
++ [NgSolve](https://ngsolve.org/)
+
++ [deal.II](https://github.com/dealii/dealii)
+
++ [libMesh](https://libmesh.github.io/)
+
++ [FreeFEM](https://freefem.org/)
+
++ [Dune](https://www.dune-project.org/modules/dune-fem/)

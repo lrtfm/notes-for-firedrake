@@ -44,9 +44,9 @@ to switch back to Chinese.
 ## [阅读指南]{.lang-zh} [How to read]{.lang-en}
 
 :::lang-zh
-+ 正文分为三个部分: **入门 (Tutorials)** 介绍求解各类方程的基本流程;
-  **进阶专题 (Advanced Topics)** 包括并行计算, PETSc, 网格生成, 调试与性能分析;
-  **内部机制 (Internals)** 探讨 Firedrake 的实现细节.
++ 正文分为两个部分: **入门 (Tutorials)** 介绍求解各类方程的基本流程;
+  **进阶专题 (Advanced Topics)** 涵盖并行计算, 调试, 性能分析, 网格生成,
+  以及 PETSc, DMPlex, 内核生成等 Firedrake 实现细节.
   初学者建议从 [Poisson 方程 I](firedrake/poisson_I.ipynb) 和
   [Poisson 方程 II](firedrake/poisson_II.ipynb) 开始.
   每章开头附有英文概要 (Overview), 并注明运行前提.
@@ -55,19 +55,19 @@ to switch back to Chinese.
   推荐初学者使用 [Docker](https://www.firedrakeproject.org/install.html#docker) 或
   [Colab](installation/colab.md), 无需本地编译.
 
-+ 附加信息部分收录了 Python, Linux, Git 和编辑器等相关工具的笔记,
++ 附加信息部分收录了 Python, Linux 和编辑器等相关工具的笔记,
   供不熟悉这些工具的读者参考.
 
 + 常用术语的中英文对照见[术语对照表](reference/glossary.md).
 :::
 
 :::lang-en
-+ The main text has three parts: *Tutorials* on the basic workflow of solving
-  PDEs, *Advanced Topics* (parallel computing, PETSc, meshing, debugging and
-  profiling), and *Internals* on implementation details. Beginners are
-  encouraged to start with the two chapters on the Poisson equation. Each
-  chapter starts with a short English overview stating its scope and
-  prerequisites.
++ The main text has two parts: *Tutorials* on the basic workflow of solving
+  PDEs, and *Advanced Topics* covering parallel computing, debugging,
+  profiling, meshing, and Firedrake implementation details such as PETSc,
+  DMPlex, and kernel generation. Beginners are encouraged to start with the
+  two chapters on the Poisson equation. Each chapter starts with a short
+  English overview stating its scope and prerequisites.
 
 + See the Installation part for how to install Firedrake. Beginners may find
   [Docker](https://www.firedrakeproject.org/install.html#docker) or
@@ -75,8 +75,7 @@ to switch back to Chinese.
   build is needed.
 
 + The Additional Information part collects notes on related tools such as
-  Python, Linux, Git and editors, for readers who are not yet familiar with
-  them.
+  Python, Linux and editors, for readers who are not yet familiar with them.
 
 + See the [Glossary](reference/glossary.md) for Chinese–English terminology
   used throughout the notes.
