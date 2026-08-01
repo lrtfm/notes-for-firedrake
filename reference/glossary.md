@@ -36,3 +36,10 @@ with the corresponding objects or functions in Firedrake/UFL.
 | 收敛阶 | convergence order/rate | `errornorm` + 网格序列 |
 | 网格自适应 | mesh adaptivity | `adaptMetric`, `adaptLabel` (DMPlex) |
 | 并行计算 | parallel computing | `mpiexec`, `mesh.comm` |
+| 进程/进程号 | process/rank | `mesh.comm.rank`, `COMM_WORLD.rank` |
+| 通信子 | communicator | `COMM_WORLD`, `mesh.comm` |
+| 网格分区 | mesh partitioning | DMPlex `distribute` |
+| 重叠区/影子区 | halo/ghost | `dat.data_ro_with_halos`, `dof_dset.halo` |
+| 集合操作 | collective operation | `assemble`, `norm`, `comm.allreduce` |
+| 局部到全局映射 | local-to-global map | `dof_dset.lgmap` |
+| 索引集 | index set (IS) | `dof_dset.field_ises`, `local_ises` |
