@@ -117,7 +117,7 @@ python3 download_petsc_pkgs.py -d <path/to/petsc/packages> pkgs_info.txt
         ```json
         {
          "argv": [
-          "/home/yzz/firedrake/real-int32-debug/bin/python",
+          "/home/user/firedrake/real-int32-debug/bin/python",
           "-m",
           "ipykernel_launcher",
           "-f",
@@ -125,7 +125,7 @@ python3 download_petsc_pkgs.py -d <path/to/petsc/packages> pkgs_info.txt
          ],
          "env": {
           "OMP_NUM_THREADS": "1",
-          "PATH": "/home/yzz/firedrake/real-int32-debug/bin:${PATH}"
+          "PATH": "/home/user/firedrake/real-int32-debug/bin:${PATH}"
          },
          "display_name": "firedrake-real-int32",
          "language": "python",
