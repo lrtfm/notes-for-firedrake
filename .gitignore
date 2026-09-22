@@ -133,6 +133,8 @@ dmypy.json
 firedrake/data
 firedrake/figures
 firedrake/pvd
+pvd/
+data/
 .aux/
 _build/
 *.logs

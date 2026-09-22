@@ -63,17 +63,17 @@ solver = NonlinearVariationalSolver(problem,
 
 u_, p_ = w.subfunctions
 
-output = VTKFile('pvd/ns-equation.pvd')
+# output = VTKFile('pvd/ns-equation.pvd')
 
 u_nm1.assign(0)
-output.write(u_nm1, p_nm1, time=0)
+# output.write(u_nm1, p_nm1, time=0)
 
 # for i in range(N_T):
 for i in ProgressBar('Time').iter(range(N_T)):
     t = tau*(i+1)
     solver.solve()
     w_nm1.assign(w)
-    if (i+1)%32 == 0:
-        output.write(u_nm1, p_nm1, time=t)
+    # if (i+1)%32 == 0:
+    #     output.write(u_nm1, p_nm1, time=t)
 
 

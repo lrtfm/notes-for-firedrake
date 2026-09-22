@@ -63,14 +63,14 @@ t = 0
 x, y = SpatialCoordinate(mesh)
 un.interpolate(u0(x,y))
 
-PETSc.Sys.Print(f'Will save result in {filename}')
-output = VTKFile(filename)
-output.write(un, wn, time=t)
+# PETSc.Sys.Print(f'Will save result in {filename}')
+# output = VTKFile(filename)
+# output.write(un, wn, time=t)
 
 for i in Bar('Timestep').iter(range(M)):
     t = (i+1)*tau
     solver.solve()
 
     vn.assign(v)
-    if (i+1)%100 == 0:
-        output.write(un, wn, time=t)
+    # if (i+1)%100 == 0:
+    #     output.write(un, wn, time=t)
