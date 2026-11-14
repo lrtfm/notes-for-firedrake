@@ -14,8 +14,9 @@ only_build_toc_files: true
 execute:
   execute_notebooks: 'cache' # force, cache
   timeout: 300  # seconds per cell; some notebooks have heavy cells
-  # These notebooks need extra tools (e.g. gmsh, fdutils) that may not be
-  # available in the build environment, so they are not executed during the build.
+  # Not executed during the build: gmsh.ipynb needs gmsh, which the build
+  # image lacks; python_notes.ipynb has cells that do network I/O, run
+  # endless loops, send signals or need MPI.
   exclude_patterns:
     - 'firedrake/gmsh.ipynb'
     - 'python/python_notes.ipynb'

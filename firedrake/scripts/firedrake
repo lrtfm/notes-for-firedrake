@@ -7,7 +7,7 @@ if [ $# -eq 0 ]; then
     echo "Usage: $PROG command [args...]"
     echo "Run command in docker container of firedrake."
     echo ""
-    echo "Exampls:"
+    echo "Examples:"
     echo "    $PROG python my-python-file.py"
     echo "    $PROG mpiexec -n 16 python my-python-file.py"
     echo ""
@@ -42,15 +42,15 @@ create_dockerfile () {
     cat <<EOF > $_DOCKERFILE
 FROM $_BASE_IMAGE
 
-USER root
-RUN echo -e "[safe]\n\tdirectory = *\n" >> /etc/gitconfig
-
-USER firedrake
-WORKDIR /home/firedrake
-
-RUN git clone https://github.com/lrtfm/fdutils.git
-RUN bash -c ". /home/firedrake/firedrake/bin/activate && pip install pqdm gmsh"
-RUN bash -c ". /home/firedrake/firedrake/bin/activate && cd fdutils && make develop"
+# The image installs Firedrake into the system python3 (no venv) and has
+# no \`python\` command. gmsh (CLI and Python module) comes from apt:
+# PyPI has no aarch64 wheel.
+RUN apt-get update -qq \\
+    && apt-get install -y -qq --no-install-recommends gmsh python3-gmsh \\
+    && rm -rf /var/lib/apt/lists/* \\
+    && ln -sf /usr/bin/python3 /usr/local/bin/python \\
+    && printf '[safe]\\n\\tdirectory = *\\n' >> /etc/gitconfig
+RUN python3 -m pip install --no-cache-dir pqdm
 EOF
 
     ${DEBUG} print_msg "THE DOCKER FILE BEGIN"
@@ -59,7 +59,7 @@ EOF
 }
 
 if [[ "x$IMAGE" == "x" ]]; then
-    BASE_IMAGE=firedrakeproject/firedrake
+    BASE_IMAGE=firedrakeproject/firedrake-vanilla-default
     IMAGE_NAME=firedrake-$(id -u -n)
     TAG=$(docker image ls --format "{{ .Tag }}" $IMAGE_NAME | sort -r | head -n1)
     if [[ "x$TAG" == "x" || "$FORCE_BUILD" == "Y" ]]; then
@@ -76,24 +76,20 @@ if [[ "x$IMAGE" == "x" ]]; then
     IMAGE=$IMAGE_NAME:$TAG
 fi
 
-FD_INFO=$(docker run --rm $IMAGE bash -c 'echo $(id -u)\;$(id -g -n)\;$HOME\;$PATH\;')
-IFS=';' read -r FD_UID FD_GNAME FD_HOME FD_PATH <<< "$FD_INFO"
-[[ $(id -u) != ${FD_UID} ]] && FD_HOME=/work
-FD_ENV=/home/firedrake/firedrake
-FD_PATH=${FD_ENV}/bin:${FD_PATH}
+# Run as the host user so files written to /work keep the right owner.
+# That user has no home in the image, so HOME points into the work dir.
+FD_HOME=/work
+[ -t 0 ] && TTY_ARGS=-ti || TTY_ARGS=-i
 
 ${DEBUG} print_msg "THE CMD BEGIN"
 ${DEBUG} echo -ne "IMAGE:\n\t"; ${DEBUG} echo "$IMAGE"
 ${DEBUG} echo -ne "COMMAND:\n\t\x60"; ${DEBUG} echo -n "$@"; ${DEBUG} echo -e "\x27"
 ${DEBUG} echo -ne "HOME:\n\t"; ${DEBUG} echo "$FD_HOME"
-${DEBUG} echo -ne "PATH:\n\t"; ${DEBUG} echo "$FD_PATH"
 ${DEBUG} print_msg "THE CMD END"
 
-docker run --rm -ti -v $(pwd):/work -w /work \
-    -u $(id -u):$(id -g) --group-add ${FD_GNAME} \
+docker run --rm ${TTY_ARGS} -v "$(pwd)":/work -w /work \
+    -u $(id -u):$(id -g) \
     -e HOME=${FD_HOME} \
-    -e PATH=${FD_PATH} \
-    -e VIRTUAL_ENV=${FD_ENV} \
     -e PYOP2_CACHE_DIR=/work/.cache \
     -e FIREDRAKE_TSFC_KERNEL_CACHE_DIR=/work/.cache \
     $IMAGE \
