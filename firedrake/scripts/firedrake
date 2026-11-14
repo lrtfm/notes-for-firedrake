@@ -77,20 +77,33 @@ if [[ "x$IMAGE" == "x" ]]; then
 fi
 
 # Run as the host user so files written to /work keep the right owner.
-# That user has no home in the image, so HOME points into the work dir.
-FD_HOME=/work
+# That user has no home in the image, so a named docker volume is mounted
+# as HOME: dot-files (.config, .fltk, ...) and the compilation caches go
+# there instead of the work dir, persist between runs and are shared
+# across projects. A volume rather than a host directory: with a cold
+# cache on a Docker Desktop bind mount, MPI runs that compile kernels
+# hang in the halo exchange. Override the name with FD_HOME_VOLUME;
+# clear the caches with `docker volume rm <name>`.
+FD_HOME_VOLUME=${FD_HOME_VOLUME:-firedrake-home-$(id -u -n)}
+FD_HOME=/fdhome
+if ! docker volume inspect "$FD_HOME_VOLUME" > /dev/null 2>&1; then
+    docker volume create "$FD_HOME_VOLUME" > /dev/null
+    docker run --rm -u root -v "$FD_HOME_VOLUME":${FD_HOME} $IMAGE \
+        chown $(id -u):$(id -g) ${FD_HOME}
+fi
 [ -t 0 ] && TTY_ARGS=-ti || TTY_ARGS=-i
 
 ${DEBUG} print_msg "THE CMD BEGIN"
 ${DEBUG} echo -ne "IMAGE:\n\t"; ${DEBUG} echo "$IMAGE"
 ${DEBUG} echo -ne "COMMAND:\n\t\x60"; ${DEBUG} echo -n "$@"; ${DEBUG} echo -e "\x27"
-${DEBUG} echo -ne "HOME:\n\t"; ${DEBUG} echo "$FD_HOME"
+${DEBUG} echo -ne "HOME:\n\t"; ${DEBUG} echo "$FD_HOME (volume: $FD_HOME_VOLUME)"
 ${DEBUG} print_msg "THE CMD END"
 
 docker run --rm ${TTY_ARGS} -v "$(pwd)":/work -w /work \
+    -v "$FD_HOME_VOLUME":${FD_HOME} \
     -u $(id -u):$(id -g) \
     -e HOME=${FD_HOME} \
-    -e PYOP2_CACHE_DIR=/work/.cache \
-    -e FIREDRAKE_TSFC_KERNEL_CACHE_DIR=/work/.cache \
+    -e PYOP2_CACHE_DIR=${FD_HOME}/.cache/pyop2 \
+    -e FIREDRAKE_TSFC_KERNEL_CACHE_DIR=${FD_HOME}/.cache/tsfc \
     $IMAGE \
     "$@"
