@@ -1,0 +1,97 @@
+Stage Name,Event Name,Rank,Count,Time,Num Messages,Message Length,Num Reductions,FLOP,dof0,dof1,dof2,dof3,dof4,dof5,dof6,dof7,e0,e1,e2,e3,e4,e5,e6,e7,4
+Main Stage,summary,0,1,2.24517,24.,253992.,31.,0.
+Main Stage,PCSetUp,0,0,0.,0.,0.,0.,0.
+Main Stage,KSPSolve,0,0,0.,0.,0.,0.,0.
+Main Stage,SNESFunctionEval,0,0,0.,0.,0.,0.,0.
+Main Stage,SNESJacobianEval,0,0,0.,0.,0.,0.,0.
+Main Stage,CreateMesh,0,0,0.,0.,0.,0.,0.
+MyMesh,summary,0,1,14.9706,2004.,1.70014e+07,775.,3132.
+MyMesh,PCSetUp,0,0,0.,0.,0.,0.,0.
+MyMesh,KSPSolve,0,0,0.,0.,0.,0.,0.
+MyMesh,SNESFunctionEval,0,0,0.,0.,0.,0.,0.
+MyMesh,SNESJacobianEval,0,0,0.,0.,0.,0.,0.
+MyMesh,CreateMesh,0,4,13.8982,1754.,1.62788e+07,559.,0.
+MySpace,summary,0,1,0.000944,0.,0.,0.,0.
+MySpace,PCSetUp,0,0,0.,0.,0.,0.,0.
+MySpace,KSPSolve,0,0,0.,0.,0.,0.,0.
+MySpace,SNESFunctionEval,0,0,0.,0.,0.,0.,0.
+MySpace,SNESJacobianEval,0,0,0.,0.,0.,0.,0.
+MySpace,CreateMesh,0,0,0.,0.,0.,0.,0.
+MySolve,summary,0,1,4.2472,854.,3.55569e+06,239.,8.85767e+08
+MySolve,PCSetUp,0,2,3.5018,338.,1.16798e+06,200.,3.15638e+08
+MySolve,KSPSolve,0,1,0.376494,488.,2.21979e+06,30.,3.9258e+08
+MySolve,SNESFunctionEval,0,1,0.260405,20.,102384.,1.,2.11813e+08
+MySolve,SNESJacobianEval,0,1,0.139951,8.,65536.,5.,4.76938e+07
+MySolve,CreateMesh,0,0,0.,0.,0.,0.,0.
+Main Stage,summary,1,1,2.23647,36.,254056.,31.,0.
+Main Stage,PCSetUp,1,0,0.,0.,0.,0.,0.
+Main Stage,KSPSolve,1,0,0.,0.,0.,0.,0.
+Main Stage,SNESFunctionEval,1,0,0.,0.,0.,0.,0.
+Main Stage,SNESJacobianEval,1,0,0.,0.,0.,0.,0.
+Main Stage,CreateMesh,1,0,0.,0.,0.,0.,0.
+MyMesh,summary,1,1,14.9793,2761.,9.69884e+06,775.,3132.
+MyMesh,PCSetUp,1,0,0.,0.,0.,0.,0.
+MyMesh,KSPSolve,1,0,0.,0.,0.,0.,0.
+MyMesh,SNESFunctionEval,1,0,0.,0.,0.,0.,0.
+MyMesh,SNESJacobianEval,1,0,0.,0.,0.,0.,0.
+MyMesh,CreateMesh,1,4,13.8982,2386.,8.97566e+06,559.,0.
+MySpace,summary,1,1,0.001017,0.,0.,0.,0.
+MySpace,PCSetUp,1,0,0.,0.,0.,0.,0.
+MySpace,KSPSolve,1,0,0.,0.,0.,0.,0.
+MySpace,SNESFunctionEval,1,0,0.,0.,0.,0.,0.
+MySpace,SNESJacobianEval,1,0,0.,0.,0.,0.,0.
+MySpace,CreateMesh,1,0,0.,0.,0.,0.,0.
+MySolve,summary,1,1,4.24703,1234.,3.56957e+06,239.,8.86935e+08
+MySolve,PCSetUp,1,2,3.50158,480.,1.17283e+06,200.,3.16114e+08
+MySolve,KSPSolve,1,1,0.376487,714.,2.22888e+06,30.,3.93297e+08
+MySolve,SNESFunctionEval,1,1,0.260346,30.,102448.,1.,2.11788e+08
+MySolve,SNESJacobianEval,1,1,0.140015,10.,65412.,5.,4.76937e+07
+MySolve,CreateMesh,1,0,0.,0.,0.,0.,0.
+Main Stage,summary,2,1,2.25592,24.,255904.,31.,0.
+Main Stage,PCSetUp,2,0,0.,0.,0.,0.,0.
+Main Stage,KSPSolve,2,0,0.,0.,0.,0.,0.
+Main Stage,SNESFunctionEval,2,0,0.,0.,0.,0.,0.
+Main Stage,SNESJacobianEval,2,0,0.,0.,0.,0.,0.
+Main Stage,CreateMesh,2,0,0.,0.,0.,0.,0.
+MyMesh,summary,2,1,14.96,1981.,9.73569e+06,775.,3132.
+MyMesh,PCSetUp,2,0,0.,0.,0.,0.,0.
+MyMesh,KSPSolve,2,0,0.,0.,0.,0.,0.
+MyMesh,SNESFunctionEval,2,0,0.,0.,0.,0.,0.
+MyMesh,SNESJacobianEval,2,0,0.,0.,0.,0.,0.
+MyMesh,CreateMesh,2,4,13.8981,1731.,9.00809e+06,559.,0.
+MySpace,summary,2,1,0.000883,0.,0.,0.,0.
+MySpace,PCSetUp,2,0,0.,0.,0.,0.,0.
+MySpace,KSPSolve,2,0,0.,0.,0.,0.,0.
+MySpace,SNESFunctionEval,2,0,0.,0.,0.,0.,0.
+MySpace,SNESJacobianEval,2,0,0.,0.,0.,0.,0.
+MySpace,CreateMesh,2,0,0.,0.,0.,0.,0.
+MySolve,summary,2,1,4.24702,862.,3.58001e+06,239.,8.86644e+08
+MySolve,PCSetUp,2,2,3.50121,344.,1.17695e+06,200.,3.16029e+08
+MySolve,KSPSolve,2,1,0.37649,488.,2.23414e+06,30.,3.93186e+08
+MySolve,SNESFunctionEval,2,1,0.255509,20.,103100.,1.,2.1171e+08
+MySolve,SNESJacobianEval,2,1,0.144762,10.,65812.,5.,4.7676e+07
+MySolve,CreateMesh,2,0,0.,0.,0.,0.,0.
+Main Stage,summary,3,1,2.31515,36.,256272.,31.,0.
+Main Stage,PCSetUp,3,0,0.,0.,0.,0.,0.
+Main Stage,KSPSolve,3,0,0.,0.,0.,0.,0.
+Main Stage,SNESFunctionEval,3,0,0.,0.,0.,0.,0.
+Main Stage,SNESJacobianEval,3,0,0.,0.,0.,0.,0.
+Main Stage,CreateMesh,3,0,0.,0.,0.,0.,0.
+MyMesh,summary,3,1,14.9006,2830.,9.75316e+06,775.,3132.
+MyMesh,PCSetUp,3,0,0.,0.,0.,0.,0.
+MyMesh,KSPSolve,3,0,0.,0.,0.,0.,0.
+MyMesh,SNESFunctionEval,3,0,0.,0.,0.,0.,0.
+MyMesh,SNESJacobianEval,3,0,0.,0.,0.,0.,0.
+MyMesh,CreateMesh,3,4,13.8982,2455.,9.02378e+06,559.,0.
+MySpace,summary,3,1,0.001044,0.,0.,0.,0.
+MySpace,PCSetUp,3,0,0.,0.,0.,0.,0.
+MySpace,KSPSolve,3,0,0.,0.,0.,0.,0.
+MySpace,SNESFunctionEval,3,0,0.,0.,0.,0.,0.
+MySpace,SNESJacobianEval,3,0,0.,0.,0.,0.,0.
+MySpace,CreateMesh,3,0,0.,0.,0.,0.,0.
+MySolve,summary,3,1,4.24703,1242.,3.59846e+06,239.,8.88802e+08
+MySolve,PCSetUp,3,2,3.50147,486.,1.18409e+06,200.,3.16799e+08
+MySolve,KSPSolve,3,1,0.376485,714.,2.24506e+06,30.,3.94281e+08
+MySolve,SNESFunctionEval,3,1,0.260203,30.,103268.,1.,2.11944e+08
+MySolve,SNESJacobianEval,3,1,0.140013,12.,66040.,5.,4.77342e+07
+MySolve,CreateMesh,3,0,0.,0.,0.,0.,0.

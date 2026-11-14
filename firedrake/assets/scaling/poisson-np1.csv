@@ -1,0 +1,25 @@
+Stage Name,Event Name,Rank,Count,Time,Num Messages,Message Length,Num Reductions,FLOP,dof0,dof1,dof2,dof3,dof4,dof5,dof6,dof7,e0,e1,e2,e3,e4,e5,e6,e7,1
+Main Stage,summary,0,1,2.65827,0.,0.,0.,0.
+Main Stage,PCSetUp,0,0,0.,0.,0.,0.,0.
+Main Stage,KSPSolve,0,0,0.,0.,0.,0.,0.
+Main Stage,SNESFunctionEval,0,0,0.,0.,0.,0.,0.
+Main Stage,SNESJacobianEval,0,0,0.,0.,0.,0.,0.
+Main Stage,CreateMesh,0,0,0.,0.,0.,0.,0.
+MyMesh,summary,0,1,51.0064,0.,0.,0.,3132.
+MyMesh,PCSetUp,0,0,0.,0.,0.,0.,0.
+MyMesh,KSPSolve,0,0,0.,0.,0.,0.,0.
+MyMesh,SNESFunctionEval,0,0,0.,0.,0.,0.,0.
+MyMesh,SNESJacobianEval,0,0,0.,0.,0.,0.,0.
+MyMesh,CreateMesh,0,4,47.3215,0.,0.,0.,0.
+MySpace,summary,0,1,0.001352,0.,0.,0.,0.
+MySpace,PCSetUp,0,0,0.,0.,0.,0.,0.
+MySpace,KSPSolve,0,0,0.,0.,0.,0.,0.
+MySpace,SNESFunctionEval,0,0,0.,0.,0.,0.,0.
+MySpace,SNESJacobianEval,0,0,0.,0.,0.,0.,0.
+MySpace,CreateMesh,0,0,0.,0.,0.,0.,0.
+MySolve,summary,0,1,11.8541,0.,0.,0.,3.05544e+09
+MySolve,PCSetUp,0,1,10.5023,0.,0.,0.,1.01378e+09
+MySolve,KSPSolve,0,1,0.722038,0.,0.,0.,1.00151e+09
+MySolve,SNESFunctionEval,0,1,0.371724,0.,0.,0.,8.47249e+08
+MySolve,SNESJacobianEval,0,1,0.250207,0.,0.,0.,1.90804e+08
+MySolve,CreateMesh,0,0,0.,0.,0.,0.,0.
